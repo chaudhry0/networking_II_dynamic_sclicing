@@ -11,8 +11,10 @@ class TrafficSlicing(app_manager.RyuApp):
     def __init__(self, *args, **kwargs):
         super(TrafficSlicing, self).__init__(*args, **kwargs)
         
-        #out_port = slice_to_port[dpid][in_port] NORMAL
+        #out_port = slice_to_port[dpid][in_port] 
         """
+        
+        #NORMAL
         self.slice_to_port = {
             1: {1:4, 4:1, 2:5, 5:2, 3:6, 6:3},
             2: {1: 2, 2: 1},
@@ -20,7 +22,8 @@ class TrafficSlicing(app_manager.RyuApp):
             4: {1:4, 4:1, 2:5, 5:2, 3:6, 6:3},
 
         }
-        
+        """
+        """
         #EMERGENCY
         self.slice_to_port = {
             1: {1:5, 5:1, 2:4, 4:2, 3:6, 6:3},
@@ -29,26 +32,24 @@ class TrafficSlicing(app_manager.RyuApp):
             4: {1:5, 5:1, 2:4, 4:2, 3:6, 6:3},
 
         }
-        """
-        #AMMINISTRATION + NORMAL
+        
+        #ADMINISTRATION + NORMAL
         self.slice_to_port = {
             1: {1:5, 5:1, 2:6, 6:2, 3:4, 4:3},
             4: {2:4, 4:2, 3:5, 5:3, 1:6, 6:1},
             2: {1: 2, 2: 1},
-            3: {1: 2, 2: 1},
-            
+            3: {1: 2, 2: 1},            
 
         }
-        
-        """
-        #AMMINISTRATION + EMERGENCY
+        """        
+        #ADMINISTRATION + EMERGENCY
         self.slice_to_port = {
-            1: {1:5, 5:1, 2:4, 4:2, 3:4, 4:3},
+            1: {1:6, 6:1, 2:4, 4:2, 3:5, 5:3},
+            4: {1:5, 5:1, 2:6, 6:2, 3:4, 4:3},
             2: {1: 2, 2: 1},
             3: {1: 2, 2: 1},
-            4: {1:6, 6:1, 2:4, 4:2, 3:5, 5:3},
-
-        }"""
+            
+        }
 
     @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER)
     def switch_features_handler(self, ev):
