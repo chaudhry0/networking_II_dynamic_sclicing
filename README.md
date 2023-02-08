@@ -63,4 +63,26 @@ Overall, On Demand SDN Slices in ComNetsEmu provides a powerful and versatile so
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- CONTACT -->
+## Contacts
+
+-   Haroon Chaudhry Mohammad - [@twitter_handle](https://twitter.com/twitter_handle) - h.chaudhrymohammd@studenti.unitn.it
+-   Giulio Zamberlan - [@twitter_handle](https://twitter.com/twitter_handle) - giulio.zamberlan@studenti.unitn.it
+-   Francesco Poinelli - [@twitter_handle](https://twitter.com/twitter_handle) - francesco.poinelli@studenti.unitn.it
+
+
+Project Link: [On Demand Network Slicing](https://github.com/chaudhry0/networking_II_dynamic_sclicing)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- ACKNOWLEDGMENTS -->
+## Acknowledgments
+
+* [GitHub](https://github.com/)
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+Thank you for visiting our page!
+
 [GUI]: images/GUI.jpg
