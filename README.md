@@ -79,25 +79,25 @@ To get a local copy up and running follow these simple example steps.
 ### Prerequisites
 
 This is an example of how to list things you need to use the software and how to install them.
-* npm
+* 
   ```sh
-  npm install npm@latest -g
+  install .......
   ```
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
+1. text
 2. Clone the repo
    ```sh
-   git clone https://github.com/github_username/repo_name.git
+   git clone https://github.com/chaudhry0/networking_II_dynamic_sclicing
    ```
-3. Install NPM packages
+3. 
    ```sh
-   npm install
+   
    ```
-4. Enter your API in `config.js`
+4. 
    ```js
-   const API_KEY = 'ENTER YOUR API';
+  
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -112,6 +112,18 @@ Use this space to show useful examples of how a project can be used. Additional 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- ABOUT US -->
+## About us
+
+We are a team of three students pursuing a degree in Computer Science, Communications, and Electronics Engineering at the University of Trento. Our passion for technology and innovation led us to embark on this exciting project as part of the Networking II course, taught by the renowned Prof. Fabrizio Granelli.
+
+The main focus of our project is software-defined networking and network slicing. Our aim was to create a system that could make on-demand network slicing in ComNetsEmu using Mininet and Python. This project has been a great opportunity for us to delve deeper into the world of networking and gain hands-on experience in this field.
+
+We are proud of what we have accomplished and are eager to share our project with the world. Our aim is to contribute to the advancement of technology and help shape the future of networking. We believe that our project will have a positive impact on the industry and we are excited to see where this journey takes us.
+
+If you have any questions or want to know more about our project, feel free to reach out to us through the emails listed in the next Section. 
+We would be more than happy to hear from you.
 
 <!-- CONTACT -->
 ## Contacts
