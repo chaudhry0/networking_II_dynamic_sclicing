@@ -53,7 +53,13 @@
 
 [![GUI image][GUI]](https://github.com/chaudhry0/networking_II_dynamic_sclicing/GUI.jpg)
 
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
+On Demand SDN Slices in ComNetsEmu is a project aimed at implementing a network slicing approach that allows for dynamic activation and de-activation of network slices via command line interface (CLI) or graphical user interface (GUI) commands. The goal of this project is to provide a flexible and efficient way to manage network resources in a virtualized environment.
+
+With the increasing demand for various types of network services, network slicing has emerged as a promising solution to address this challenge. Network slicing allows multiple virtual networks to co-exist on the same physical infrastructure, each with its own characteristics and requirements. The On Demand SDN Slices in ComNetsEmu project implements this concept using software-defined networking (SDN) technology.
+
+The project uses a single SDN controller, such as RYU, to manage the network slices. The user can activate and de-activate different slices on demand, depending on their specific requirements. The slices can be described using templates, which allow for easy identification of flows, topology, and link capacity for each slice.
+
+Overall, On Demand SDN Slices in ComNetsEmu provides a powerful and versatile solution for managing network resources in a virtualized environment. With its ability to activate and de-activate slices on demand, it offers increased flexibility and efficiency for users.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
