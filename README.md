@@ -63,6 +63,12 @@ Overall, On Demand SDN Slices in ComNetsEmu provides a powerful and versatile so
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+### Built With
+* [![Python][Python-logo]][Python-url]
+* [![Visual Studio Code][VSC-logo]][VSC-url]
+* [![Texas Board][Texas-logo]][Texas-url]
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 <!-- CONTACT -->
 ## Contacts
 
@@ -86,3 +92,7 @@ Project Link: [On Demand Network Slicing](https://github.com/chaudhry0/networkin
 Thank you for visiting our page!
 
 [GUI]: images/GUI.jpg
+[Python-logo]: https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white
+[Python-url]: https://www.python.org/doc/
+[VSC-logo]: https://img.shields.io/badge/-Visual%20Studio%20Code-007ACC.svg?logo=visual-studio-code&style=flat
+[VSC-url]: https://code.visualstudio.com/
