@@ -16,6 +16,17 @@ class TrafficSlicing(app_manager.RyuApp):
 
         window.title('Hello Python')
         window.geometry("300x200+10+20")
+        #add 4 buttons to the window
+        b1=Button(window, text="NORMAL", width=15, height=2)
+        b2=Button(window, text="EMERGENCY", width=15, height=2)
+        b3=Button(window, text="ADMINISTRATION+NORMAL", width=20, height=2)
+        b4=Button(window, text="ADMINISTRATION+EMERGENCY", width=28, height=2)
+        
+        b1.pack()
+        b2.pack()
+        b3.pack()
+        b4.pack()
+        
         window.mainloop()
         #out_port = slice_to_port[dpid][in_port] 
         """
