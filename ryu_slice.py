@@ -3,6 +3,7 @@ from ryu.controller import ofp_event
 from ryu.controller.handler import CONFIG_DISPATCHER, MAIN_DISPATCHER
 from ryu.controller.handler import set_ev_cls
 from ryu.ofproto import ofproto_v1_3
+from tkinter import *
 
 
 class TrafficSlicing(app_manager.RyuApp):
@@ -10,7 +11,12 @@ class TrafficSlicing(app_manager.RyuApp):
 
     def __init__(self, *args, **kwargs):
         super(TrafficSlicing, self).__init__(*args, **kwargs)
-        
+        window=Tk()
+        # add widgets here
+
+        window.title('Hello Python')
+        window.geometry("300x200+10+20")
+        window.mainloop()
         #out_port = slice_to_port[dpid][in_port] 
         """
         
