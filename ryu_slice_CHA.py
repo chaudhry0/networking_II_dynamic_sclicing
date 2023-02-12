@@ -5,6 +5,7 @@ from ryu.controller.handler import set_ev_cls
 from ryu.ofproto import ofproto_v1_0, ofproto_v1_0_parser
 from ryu.ofproto import ofproto_v1_3
 import ryu.ofproto.ofproto_v1_3_parser as ofparser
+import ryu.ofproto.ofproto_v1_3 as ofp
 from ryu.topology import event
 import tkinter as tk
 import threading
@@ -24,8 +25,9 @@ class TrafficSlicing(app_manager.RyuApp):
         self.switches = []
         self.datapath_list = []
         self.dp = None
-        self.interval = 5
+        self.interval = 360
         self.windowsOpen = False
+        self.boolDeleteFlows = False
         
         def start(root, interval_entry):
             # close the window so the application can start
@@ -41,36 +43,26 @@ class TrafficSlicing(app_manager.RyuApp):
               create_Window()
             #time.sleep(10)
         
-        def delete_all_flows():
-            url = "http://localhost:8080/stats/flow/clear"
-            response = requests.delete(url)
-            if response.status_code == 200:
-                print("All flows deleted successfully")
-            else:
-                print("Failed to delete flows. Response code:", response.status_code) 
+
                 
-        def delete_flows(self):
-            ofp = self.dp.ofproto
-            ofp_parser = self.dp.ofproto_parser
-            match = ofparser.OFPMatch()
-            instructions = []
-            flow_mod = ofparser.OFPFlowMod(self.dp, cookie=0, cookie_mask=0, table_id=0,
-                                            command=ofp.OFPFC_DELETE, out_port=ofp.OFPP_ANY,
-                                            out_group=ofp.OFPG_ANY, priority=0, buffer_id=0xffffffff,
-                                            match=match, instructions=instructions)
-            self.dp.send_msg(flow_mod)
-            print("Deleting all flows")
+
         
         def deleteFlows():
             print("deleteFlows")
             #ofctl = ofctl_v1_3.OFCtl13(self.dp)
             #ofctl.remove_table_flow(self.dp, table_id=0)
             print("Deleting all flows")
-            print("dp: ", self.dp)
-            delete_flows(self)
+            #print("dp: ", self.dp)
+            #print("dp.id: ", self.dp.id)             
+            #delete_flows(self)
+            #self.remove_flows(self.dp,0)
             #delete_all_flows()
-            #for dp in self.datapath_list:                
-            #    self.remove_flows(dp,0)  
+            self.boolDeleteFlows = True
+            #for dp in self.datapath_list:
+            #    print("dp: ", dp)
+            #    print("dp.id: ", dp.id)
+            #    remove_all_flows(dp)                
+                #delete_flows(self, dp)  
                     
         
         def create_Window():
@@ -102,6 +94,7 @@ class TrafficSlicing(app_manager.RyuApp):
             delete_button.pack()
             
             interval_entry = tk.Entry(root)
+            interval_entry.insert(0, "60")
             interval_entry.pack()
             
             start_button = tk.Button(root, text="Start", command=lambda: start(root, interval_entry))
@@ -111,10 +104,11 @@ class TrafficSlicing(app_manager.RyuApp):
             
             root.mainloop()
         
-        #create_Window()
+        create_Window()
         
         #thread = threading.Thread(target=myThread)
         #thread.start()
+        
         
         def call_every_interval_seconds():
             timer = threading.Timer(self.interval, call_every_interval_seconds)
@@ -220,6 +214,43 @@ class TrafficSlicing(app_manager.RyuApp):
         )
         datapath.send_msg(out)
 
+    def delete_all_flows(self, datapath):
+        url = "http://localhost:8080/stats/flowentry/clear/" + str(datapath.id)
+        response = requests.delete(url)
+        #curl -X "DELETE" http://localhost:8080/stats/flow/clear
+        #url = "http://localhost:8080/stats/switches"
+        #response = requests.get(url)
+        if response.status_code == 200:
+            print("All flows deleted successfully")
+        else:
+            print("Failed to delete flows. Response code:", response.status_code)
+            print("Response content:", response.content)
+            print("Response headers:", response.headers)
+            print("Response text:", response.text) 
+
+    def delete_flows(self, datapath):
+        ofp = datapath.ofproto
+        ofp_parser = datapath.ofproto
+        match = ofparser.OFPMatch()
+        instructions = []
+        flow_mod = ofparser.OFPFlowMod(datapath, cookie=0, cookie_mask=0, table_id=0,
+                                        command=ofp.OFPFC_DELETE, out_port=ofp.OFPP_ANY,
+                                        out_group=ofp.OFPG_ANY, priority=0, buffer_id=0xffffffff,
+                                        match=match, instructions=instructions)
+        datapath.send_msg(flow_mod)
+        print("Deleting all flows")
+      
+    def remove_all_flows(self, datapath):
+        ofp_parser = datapath.ofproto_parser
+
+        match = ofp_parser.OFPMatch()
+        mod = ofp_parser.OFPFlowMod(
+            datapath=datapath, command=ofp.OFPFC_DELETE,
+            out_port=ofp.OFPP_ANY, out_group=ofp.OFPG_ANY,
+            priority=1, match=match
+        )
+        datapath.send_msg(mod)    
+                
     @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
     def _packet_in_handler(self, ev):
         msg = ev.msg
@@ -230,6 +261,14 @@ class TrafficSlicing(app_manager.RyuApp):
         out_port = self.slice_to_port[dpid][in_port]
         actions = [datapath.ofproto_parser.OFPActionOutput(out_port)]
         match = datapath.ofproto_parser.OFPMatch(in_port=in_port)
+        
+        if(self.boolDeleteFlows):
+            print("packet in handler: boolDeleteFlows = True")
+            for dp in self.datapath_list:
+                print("deleting all flows for datapath: ", dp.id)
+                #self.delete_all_flows(dp)
+                self.remove_all_flows(dp)            
+            self.boolDeleteFlows = False
 
         self.add_flow(datapath, 1, match, actions)
         self._send_package(msg, datapath, in_port, actions)
@@ -272,3 +311,30 @@ class TrafficSlicing(app_manager.RyuApp):
             print("register datapath: %016x", datapath.id)
             self.dp = datapath
             print("datapath: %016x", self.dp.id)
+
+    @set_ev_cls(ofp_event.EventOFPFlowRemoved, MAIN_DISPATCHER)
+    def flow_removed_handler(self, ev):
+        msg = ev.msg
+        dp = msg.datapath
+        ofp = dp.ofproto
+
+        if msg.reason == ofp.OFPRR_IDLE_TIMEOUT:
+            reason = 'IDLE TIMEOUT'
+        elif msg.reason == ofp.OFPRR_HARD_TIMEOUT:
+            reason = 'HARD TIMEOUT'
+        elif msg.reason == ofp.OFPRR_DELETE:
+            reason = 'DELETE'
+        elif msg.reason == ofp.OFPRR_GROUP_DELETE:
+            reason = 'GROUP DELETE'
+        else:
+            reason = 'unknown'
+
+        self.logger.debug('OFPFlowRemoved received: '
+                        'cookie=%d priority=%d reason=%s table_id=%d '
+                        'duration_sec=%d duration_nsec=%d '
+                        'idle_timeout=%d hard_timeout=%d '
+                        'packet_count=%d byte_count=%d match.fields=%s',
+                        msg.cookie, msg.priority, reason, msg.table_id,
+                        msg.duration_sec, msg.duration_nsec,
+                        msg.idle_timeout, msg.hard_timeout,
+                        msg.packet_count, msg.byte_count, msg.match)
