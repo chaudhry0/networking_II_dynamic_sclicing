@@ -4,7 +4,6 @@ from ryu.controller.handler import CONFIG_DISPATCHER, MAIN_DISPATCHER, DEAD_DISP
 from ryu.controller.handler import set_ev_cls
 from ryu.ofproto import ofproto_v1_0, ofproto_v1_0_parser
 from ryu.ofproto import ofproto_v1_3
-<<<<<<< HEAD
 import ryu.ofproto.ofproto_v1_3_parser as ofparser
 from ryu.topology import event
 import tkinter as tk
@@ -13,10 +12,6 @@ import time
 import requests
 from ryu.lib import ofctl_v1_3
 
-=======
-from tkinter import *
-from tkinter import ttk
->>>>>>> d211d575e785ec15f5337d62ecf04930853115ce
 
 
 
@@ -25,7 +20,6 @@ class TrafficSlicing(app_manager.RyuApp):
 
     def __init__(self, *args, **kwargs):
         super(TrafficSlicing, self).__init__(*args, **kwargs)
-<<<<<<< HEAD
         print("TrafficSlicing __init__")
         self.switches = []
         self.datapath_list = []
@@ -66,75 +60,6 @@ class TrafficSlicing(app_manager.RyuApp):
                                             match=match, instructions=instructions)
             self.dp.send_msg(flow_mod)
             print("Deleting all flows")
-=======
-        window=Tk()
-        # add widgets here
-        print ("Inizio")
-        frm = ttk.Frame(window, padding=10)
-        frm.grid()
-        #ttk.Label(frm, text="Hello World!").grid(column=0, row=0)
-        #ttk.Button(frm, text="Quit", command=window.destroy).grid(column=0,row=0)
-        
-        
-        
-        window.title('Hello Python')
-        window.geometry("500x200+10+20")
-    
-       # ttk.Button(frm, text="Quit", command=window.destroy).grid(column=0,row=3)
-        
-        #action when click the button b1
-        def click1():
-            print("NORMAL")
-            self.slice_to_port = {
-                1: {1:4, 4:1, 2:5, 5:2, 3:6, 6:3},
-                2: {1: 2, 2: 1},
-                3: {1: 2, 2: 1},
-                4: {1:4, 4:1, 2:5, 5:2, 3:6, 6:3},
-
-            }
-        #action when click the button b2
-        def click2():
-            print("EMERGENCY")
-            self.slice_to_port = {
-                1: {1:5, 5:1, 2:4, 4:2, 3:6, 6:3},
-                2: {1: 2, 2: 1},
-                3: {1: 2, 2: 1},
-                4: {1:5, 5:1, 2:4, 4:2, 3:6, 6:3},
-
-            }
-        #action when click the button b3
-        def click3():
-            print("ADMINISTRATION")
-            self.slice_to_port = {
-                1: {1:5, 5:1, 2:6, 6:2, 3:4, 4:3},
-                4: {2:4, 4:2, 3:5, 5:3, 1:6, 6:1},
-                2: {1: 2, 2: 1},
-                3: {1: 2, 2: 1},            
-
-            }
-        #action when click the button b4
-        def click4():
-            print("ADMINISTRATION + EMERGENCY")
-            self.slice_to_port = {
-                1: {1:6, 6:1, 2:4, 4:2, 3:5, 5:3},
-                4: {1:5, 5:1, 2:6, 6:2, 3:4, 4:3},
-                2: {1: 2, 2: 1},
-                3: {1: 2, 2: 1},
-
-            }
-        
-        #add 4 buttons to the window
-        b1=Button(window, text="NORMAL", width=15, height=2, command=click1)
-        b2=Button(window, text="EMERGENCY", width=15, height=2, command=click2)
-        b3=Button(window, text="ADMINISTRATION", width=20, height=2, command=click3)
-        b4=Button(window, text="ADMINISTRATION+EMERGENCY", width=28, height=2, command=click4)
-        
-        b1.grid(row=0, column=0)
-        b2.grid(row=0, column=1)
-        b3.grid(row=1, column=0)
-        b4.grid(row=1, column=1)
-        
->>>>>>> d211d575e785ec15f5337d62ecf04930853115ce
         
         def deleteFlows():
             print("deleteFlows")
@@ -223,14 +148,9 @@ class TrafficSlicing(app_manager.RyuApp):
             4: {1:5, 5:1, 2:4, 4:2, 3:6, 6:3},
 
         }
-<<<<<<< HEAD
 
     def administration_normal(self):
         print("administration_normal scenario has been selected")
-=======
-        
-        #ADMINISTRATION
->>>>>>> d211d575e785ec15f5337d62ecf04930853115ce
         self.slice_to_port = {
             1: {1:5, 5:1, 2:6, 6:2, 3:4, 4:3},
             4: {2:4, 4:2, 3:5, 5:3, 1:6, 6:1},
@@ -238,14 +158,9 @@ class TrafficSlicing(app_manager.RyuApp):
             3: {1: 2, 2: 1},            
 
         }
-<<<<<<< HEAD
 
     def administration_emergency(self):
         print("administration_emergency scenario has been selected")
-=======
-              
-        #ADMINISTRATION + EMERGENCY
->>>>>>> d211d575e785ec15f5337d62ecf04930853115ce
         self.slice_to_port = {
             1: {1:6, 6:1, 2:4, 4:2, 3:5, 5:3},
             4: {1:5, 5:1, 2:6, 6:2, 3:4, 4:3},
@@ -253,7 +168,6 @@ class TrafficSlicing(app_manager.RyuApp):
             3: {1: 2, 2: 1},
                     
         }
-<<<<<<< HEAD
             
     def select_case(self, case):
         options = {
@@ -267,9 +181,6 @@ class TrafficSlicing(app_manager.RyuApp):
 
 
 
-=======
-        """ 
->>>>>>> d211d575e785ec15f5337d62ecf04930853115ce
     @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER)
     def switch_features_handler(self, ev):
         datapath = ev.msg.datapath
