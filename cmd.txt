@@ -1,0 +1,8 @@
+see real-time switches log file
+sudo tail -f /var/log/openvswitch/ovs-vswitchd.log
+
+file OVS log
+sudo cat /var/log/openvswitch/ovs-vswitchd.log
+
+
+--verbose #when running controller to see all the triggered events.
