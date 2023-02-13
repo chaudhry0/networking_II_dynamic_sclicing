@@ -20,7 +20,7 @@ class NetworkSlicingTopo(Topo):
         host_link_config = dict()
 
         # Create switch nodes
-        for i in range(6):
+        for i in range(4):
             sconfig = {"dpid": "%016x" % (i + 1)}
             self.addSwitch("s%d" % (i + 1), **sconfig)
 
