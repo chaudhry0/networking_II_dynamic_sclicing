@@ -2,16 +2,19 @@ from ryu.base import app_manager
 from ryu.controller import ofp_event
 from ryu.controller.handler import CONFIG_DISPATCHER, MAIN_DISPATCHER, DEAD_DISPATCHER
 from ryu.controller.handler import set_ev_cls
-from ryu.ofproto import ofproto_v1_0, ofproto_v1_0_parser
 from ryu.ofproto import ofproto_v1_3
+from ryu.ofproto import ofproto_v1_3_parser
 import ryu.ofproto.ofproto_v1_3_parser as ofparser
 import ryu.ofproto.ofproto_v1_3 as ofp
+from ryu.lib.packet import packet
+from ryu.lib.packet import ethernet
+from ryu.lib.packet import ether_types
 from ryu.topology import event
 import tkinter as tk
+from tkinter import messagebox
 import threading
 import time
 import requests
-from ryu.lib import ofctl_v1_3
 
 
 
@@ -26,48 +29,43 @@ class TrafficSlicing(app_manager.RyuApp):
         self.datapath_list = []
         self.dp = None
         self.interval = 360
-        self.windowsOpen = False
+        self.idleTimeout = 30
+        self.hardTimeout = 60
+        self.boolWindowsOpen = False
         self.boolDeleteFlows = False
         
         def start(root, interval_entry):
             # close the window so the application can start
-            self.interval = int(interval_entry.get()) 
+            self.interval = int(interval_entry.get())
+            print("User chosen Interval: ", self.interval) 
             root.destroy()
-            self.windowsOpen = False
-            print("windows_Opwn should be TRUE: ", self.windowsOpen)
+            self.boolWindowsOpen = False
+            print("windows_Opwn should be TRUE: ", self.boolWindowsOpen)
+            time.sleep(2)
+            if (self.boolDeleteFlows == True):
+                for dp in self.datapath_list:
+                    print("deleting all flows for datapath: ", dp.id)
+                    self.remove_all_flows_from_sw(dp)
+                time.sleep(1)            
+                self.boolDeleteFlows = False
+
  
 
         def my_function():
-            if(self.windowsOpen == False):
-              print("windows_Opwn should be FALSE: ", self.windowsOpen)
+            if(self.boolWindowsOpen == False):
+              print("windows_Opwn should be FALSE: ", self.boolWindowsOpen)
               create_Window()
-            #time.sleep(10)
-        
-
-                
-
+            
         
         def deleteFlows():
-            print("deleteFlows")
-            #ofctl = ofctl_v1_3.OFCtl13(self.dp)
-            #ofctl.remove_table_flow(self.dp, table_id=0)
-            print("Deleting all flows")
-            #print("dp: ", self.dp)
-            #print("dp.id: ", self.dp.id)             
-            #delete_flows(self)
-            #self.remove_flows(self.dp,0)
-            #delete_all_flows()
+            print("deleteFlows Function called") 
             self.boolDeleteFlows = True
-            #for dp in self.datapath_list:
-            #    print("dp: ", dp)
-            #    print("dp.id: ", dp.id)
-            #    remove_all_flows(dp)                
-                #delete_flows(self, dp)  
+            print("boolDeleteFlows should be TRUE: ", self.boolDeleteFlows)            
                     
         
         def create_Window():
-            self.windowsOpen = True 
-            print("windows_Opwn should be TRUE: ", self.windowsOpen)
+            self.boolWindowsOpen = True 
+            print("windows_Opwn should be TRUE: ", self.boolWindowsOpen)
             root = tk.Tk()
             root.title("Select Case")
 
@@ -100,28 +98,37 @@ class TrafficSlicing(app_manager.RyuApp):
             start_button = tk.Button(root, text="Start", command=lambda: start(root, interval_entry))
             start_button.pack()
             
+            def on_closing():
+                if messagebox.askokcancel("Quit", "Do you want to quit?"):
+                    root.destroy()
+                    self.boolWindowsOpen = False
+                    print("windows_Opwn should be TRUE: ", self.boolWindowsOpen)
 
-            
+            root.protocol("WM_DELETE_WINDOW", on_closing)
+
+            print("line 87 before mainloop")
             root.mainloop()
+            print("line 89 after mainloop")
         
         create_Window()
-        
-        #thread = threading.Thread(target=myThread)
-        #thread.start()
-        
-        
+        print("Line 91 created window")
+   
         def call_every_interval_seconds():
             timer = threading.Timer(self.interval, call_every_interval_seconds)
             timer.start()
+            print("call my_function from call_every_interval_seconds function")
             my_function()
 
+        print("Line 99 before timer")
         timer = threading.Timer(self.interval, call_every_interval_seconds)
         timer.start()
         
         
 
        
-
+    def print_slice_to_port(self):
+        #print dict self.slice_to_port
+        print("slice_to_port: ", self.slice_to_port)
 
     def normal(self):
         print("normal scenario has been selected")
@@ -132,6 +139,7 @@ class TrafficSlicing(app_manager.RyuApp):
             4: {1:4, 4:1, 2:5, 5:2, 3:6, 6:3},
 
         }
+        self.print_slice_to_port()
 
     def emergency(self):
         print("emergency scenario has been selected")
@@ -142,6 +150,8 @@ class TrafficSlicing(app_manager.RyuApp):
             4: {1:5, 5:1, 2:4, 4:2, 3:6, 6:3},
 
         }
+        self.print_slice_to_port()
+
 
     def administration_normal(self):
         print("administration_normal scenario has been selected")
@@ -152,6 +162,8 @@ class TrafficSlicing(app_manager.RyuApp):
             3: {1: 2, 2: 1},            
 
         }
+        self.print_slice_to_port()
+
 
     def administration_emergency(self):
         print("administration_emergency scenario has been selected")
@@ -162,6 +174,7 @@ class TrafficSlicing(app_manager.RyuApp):
             3: {1: 2, 2: 1},
                     
         }
+        self.print_slice_to_port()
             
     def select_case(self, case):
         options = {
@@ -186,18 +199,20 @@ class TrafficSlicing(app_manager.RyuApp):
         actions = [
             parser.OFPActionOutput(ofproto.OFPP_CONTROLLER, ofproto.OFPCML_NO_BUFFER)
         ]
-        self.add_flow(datapath, 0, match, actions)
+        self.add_flow(datapath, 0, match, actions, 0, 0)
 
-    def add_flow(self, datapath, priority, match, actions):
+    def add_flow(self, datapath, priority, match, actions, idleTimeout, hardTimeout):
         ofproto = datapath.ofproto
         parser = datapath.ofproto_parser
 
          # construct flow_mod message and send it.
         inst = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions)]
         mod = parser.OFPFlowMod(
-            datapath=datapath, priority=priority, match=match, instructions=inst
+            datapath=datapath, idle_timeout=idleTimeout, hard_timeout=hardTimeout, priority=priority, match=match, instructions=inst
         )
         datapath.send_msg(mod)
+        print("Adding flow to switch: ", datapath.id)
+        #print("MOD", mod)
 
     def _send_package(self, msg, datapath, in_port, actions):
         data = None
@@ -213,43 +228,29 @@ class TrafficSlicing(app_manager.RyuApp):
             data=data,
         )
         datapath.send_msg(out)
+        print("Sending packet to switch: ", datapath.id)
+        print("message type: ", msg.msg_type)
+        #print("OUT", out)
 
-    def delete_all_flows(self, datapath):
-        url = "http://localhost:8080/stats/flowentry/clear/" + str(datapath.id)
-        response = requests.delete(url)
-        #curl -X "DELETE" http://localhost:8080/stats/flow/clear
-        #url = "http://localhost:8080/stats/switches"
-        #response = requests.get(url)
-        if response.status_code == 200:
-            print("All flows deleted successfully")
-        else:
-            print("Failed to delete flows. Response code:", response.status_code)
-            print("Response content:", response.content)
-            print("Response headers:", response.headers)
-            print("Response text:", response.text) 
-
-    def delete_flows(self, datapath):
-        ofp = datapath.ofproto
-        ofp_parser = datapath.ofproto
-        match = ofparser.OFPMatch()
-        instructions = []
-        flow_mod = ofparser.OFPFlowMod(datapath, cookie=0, cookie_mask=0, table_id=0,
-                                        command=ofp.OFPFC_DELETE, out_port=ofp.OFPP_ANY,
-                                        out_group=ofp.OFPG_ANY, priority=0, buffer_id=0xffffffff,
-                                        match=match, instructions=instructions)
-        datapath.send_msg(flow_mod)
-        print("Deleting all flows")
       
-    def remove_all_flows(self, datapath):
+    def remove_all_flows_from_sw(self, datapath):
+        ofp = datapath.ofproto
         ofp_parser = datapath.ofproto_parser
-
+        
+        # Create a match object with no match fields
         match = ofp_parser.OFPMatch()
+        
+        # Create a flow mod message with command DELETE and match object
         mod = ofp_parser.OFPFlowMod(
-            datapath=datapath, command=ofp.OFPFC_DELETE,
+            datapath=datapath, command=ofp.OFPFC_DELETE_STRICT,
             out_port=ofp.OFPP_ANY, out_group=ofp.OFPG_ANY,
             priority=1, match=match
         )
-        datapath.send_msg(mod)    
+        
+        # Send the flow mod message to the switch
+        datapath.send_msg(mod)
+        print("Removing all flows from switch: ", datapath.id)
+        print("MOD", mod)
                 
     @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
     def _packet_in_handler(self, ev):
@@ -257,38 +258,54 @@ class TrafficSlicing(app_manager.RyuApp):
         datapath = msg.datapath
         in_port = msg.match["in_port"]
         dpid = datapath.id
-
-        out_port = self.slice_to_port[dpid][in_port]
-        actions = [datapath.ofproto_parser.OFPActionOutput(out_port)]
-        match = datapath.ofproto_parser.OFPMatch(in_port=in_port)
+        pkt = packet.Packet(msg.data)
+        eth = pkt.get_protocol(ethernet.ethernet)
         
+        if(self.boolDeleteFlows == False and eth.ethertype != ether_types.ETH_TYPE_LLDP):
+            
+            out_port = self.slice_to_port[dpid][in_port]
+            actions = [datapath.ofproto_parser.OFPActionOutput(out_port)]
+            match = datapath.ofproto_parser.OFPMatch(in_port=in_port)            
+
+            self.add_flow(datapath, 1, match, actions, self.idleTimeout, self.hardTimeout)
+            self._send_package(msg, datapath, in_port, actions)
+        
+        """
         if(self.boolDeleteFlows):
             print("packet in handler: boolDeleteFlows = True")
             for dp in self.datapath_list:
                 print("deleting all flows for datapath: ", dp.id)
-                #self.delete_all_flows(dp)
-                self.remove_all_flows(dp)            
+                self.remove_all_flows_from_sw(dp)            
             self.boolDeleteFlows = False
+        else:
+            out_port = self.slice_to_port[dpid][in_port]
+            actions = [datapath.ofproto_parser.OFPActionOutput(out_port)]
+            match = datapath.ofproto_parser.OFPMatch(in_port=in_port)            
 
-        self.add_flow(datapath, 1, match, actions)
-        self._send_package(msg, datapath, in_port, actions)
+            self.add_flow(datapath, 1, match, actions)
+            self._send_package(msg, datapath, in_port, actions)
+        """
 
-    def remove_flows(self, datapath, table_id):
-            """Removing all flow entries."""
-            parser = datapath.ofproto_parser
-            ofproto = datapath.ofproto
-            empty_match = parser.OFPMatch()
-            instructions = []
-            flow_mod = self.remove_table_flows(datapath, table_id,
-                                            empty_match, instructions)
-            print ("deleting all flow entries in table ", table_id)
-            datapath.send_msg(flow_mod)
-        
-    def remove_table_flows(self, datapath, table_id, match, instructions):
-            """Create OFP flow mod message to remove flows from table."""
-            ofproto = datapath.ofproto
-            flow_mod = datapath.ofproto_parser.OFPFlowMod(datapath,match,0,ofproto.OFPFC_DELETE,0,0,1,ofproto.OFP_NO_BUFFER,ofproto.OFPP_NONE,0,instructions)
-            return flow_mod
+    @set_ev_cls(ofp_event.EventOFPFlowRemoved, MAIN_DISPATCHER)
+    def flow_removed_handler(self, ev):
+        print("FLOW REMOVED HANDLER")
+        msg = ev.msg
+        dp = msg.datapath
+        ofp = dp.ofproto
+        reason = msg.reason
+        if reason == ofp.OFPRR_IDLE_TIMEOUT:
+            reason = "idle timeout"
+        elif reason == ofp.OFPRR_HARD_TIMEOUT:
+            reason = "hard timeout"
+        elif reason == ofp.OFPRR_DELETE:
+            reason = "manually deleted"
+        elif reason == ofp.OFPRR_GROUP_DELETE:
+            reason = "group deleted"
+        else:
+            reason = "unknown"
+
+        print("Flow removed: reason={}, match={}, duration={}, idle_timeout={}, hard_timeout={}, cookie={}, packet_count={}, byte_count={}".format(
+            reason, msg.match, msg.duration_sec, msg.idle_timeout, msg.hard_timeout, msg.cookie, msg.packet_count, msg.byte_count))
         
     @set_ev_cls(event.EventSwitchEnter)
     def switch_enter_handler(self, ev):
@@ -299,42 +316,6 @@ class TrafficSlicing(app_manager.RyuApp):
         self.logger.info(f"Switch has been plugged in PID: {switch_dpid}")
 
         if switch_dpid not in self.switches:
-            if(switch_dpid == 1 or switch_dpid == 4 ):
-                self.switches.append(switch_dpid)               
+            self.switches.append(switch_dpid)               
             self.datapath_list.append(switch_dp)
             
-    @set_ev_cls(ofp_event.EventOFPStateChange, [MAIN_DISPATCHER, DEAD_DISPATCHER])
-    def state_change_handler(self, ev):
-        datapath = ev.datapath
-        if ev.state == MAIN_DISPATCHER:
-            self.logger.debug('register datapath: %016x', datapath.id)
-            print("register datapath: %016x", datapath.id)
-            self.dp = datapath
-            print("datapath: %016x", self.dp.id)
-
-    @set_ev_cls(ofp_event.EventOFPFlowRemoved, MAIN_DISPATCHER)
-    def flow_removed_handler(self, ev):
-        msg = ev.msg
-        dp = msg.datapath
-        ofp = dp.ofproto
-
-        if msg.reason == ofp.OFPRR_IDLE_TIMEOUT:
-            reason = 'IDLE TIMEOUT'
-        elif msg.reason == ofp.OFPRR_HARD_TIMEOUT:
-            reason = 'HARD TIMEOUT'
-        elif msg.reason == ofp.OFPRR_DELETE:
-            reason = 'DELETE'
-        elif msg.reason == ofp.OFPRR_GROUP_DELETE:
-            reason = 'GROUP DELETE'
-        else:
-            reason = 'unknown'
-
-        self.logger.debug('OFPFlowRemoved received: '
-                        'cookie=%d priority=%d reason=%s table_id=%d '
-                        'duration_sec=%d duration_nsec=%d '
-                        'idle_timeout=%d hard_timeout=%d '
-                        'packet_count=%d byte_count=%d match.fields=%s',
-                        msg.cookie, msg.priority, reason, msg.table_id,
-                        msg.duration_sec, msg.duration_nsec,
-                        msg.idle_timeout, msg.hard_timeout,
-                        msg.packet_count, msg.byte_count, msg.match)
