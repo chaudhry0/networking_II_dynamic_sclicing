@@ -61,8 +61,65 @@ class TrafficSlicing(app_manager.RyuApp):
             print("deleteFlows Function called") 
             self.boolDeleteFlows = True
             print("boolDeleteFlows should be TRUE: ", self.boolDeleteFlows)            
-                    
         
+        def create_Window():
+            self.boolWindowsOpen = True 
+            print("windows_Opwn should be TRUE: ", self.boolWindowsOpen)
+            root = tk.Tk()
+            root.title("Select Case")
+
+            # Use a label as a header
+            header = tk.Label(root, text="Select Scenario", font=("Helvetica", 16))
+            header.pack(pady=10)
+
+            # Create a frame to contain the buttons
+            frame = tk.Frame(root, relief=tk.SUNKEN, bd=2)
+            frame.pack(pady=10)
+
+            # Create the buttons with a different font and padding
+            normal_button = tk.Button(frame, text="Normal", font=("Helvetica", 14), padx=10, command=lambda: self.select_case(1))
+            normal_button.pack(side=tk.LEFT, padx=10)
+
+            emergency_button = tk.Button(frame, text="Emergency", font=("Helvetica", 14), padx=10, command=lambda: self.select_case(2))
+            emergency_button.pack(side=tk.LEFT, padx=10)
+
+            administration_normal_button = tk.Button(frame, text="Administration + Normal", font=("Helvetica", 14), padx=10, command=lambda: self.select_case(3))
+            administration_normal_button.pack(side=tk.LEFT, padx=10)
+
+            administration_emergency_button = tk.Button(frame, text="Administration + Emergency", font=("Helvetica", 14), padx=10, command=lambda: self.select_case(4))
+            administration_emergency_button.pack(side=tk.LEFT, padx=10)
+            
+            # Use a label and entry for the interval
+            interval_frame = tk.Frame(root)
+            interval_frame.pack(pady=10)
+
+            interval_label = tk.Label(interval_frame, text="Interval (seconds) for next GUI WINDOW:", font=("Helvetica", 14))
+            interval_label.pack(side=tk.LEFT)
+
+            interval_entry = tk.Entry(interval_frame, font=("Helvetica", 14), width=10)
+            interval_entry.insert(0, "60")
+            interval_entry.pack(side=tk.LEFT, padx=10)
+            
+            # Use a button to delete flows
+            delete_button = tk.Button(root, text="Delete Flows", font=("Helvetica", 14), command=lambda: deleteFlows())
+            delete_button.pack(pady=10)
+            
+            # Use a button to start
+            start_button = tk.Button(root, text="Start", font=("Helvetica", 14), command=lambda: start(root, interval_entry))
+            start_button.pack(pady=10)
+    
+             # Confirm with the user before quitting the window
+            def on_closing():
+                if messagebox.askokcancel("Quit", "Do you want to quit?"):
+                    root.destroy()
+                    self.boolWindowsOpen = False
+                    print("windows_Opwn should be TRUE: ", self.boolWindowsOpen)
+
+            root.protocol("WM_DELETE_WINDOW", on_closing)
+
+            root.mainloop()
+                    
+        """
         def create_Window():
             self.boolWindowsOpen = True 
             print("windows_Opwn should be TRUE: ", self.boolWindowsOpen)
@@ -106,10 +163,8 @@ class TrafficSlicing(app_manager.RyuApp):
 
             root.protocol("WM_DELETE_WINDOW", on_closing)
 
-            print("line 87 before mainloop")
             root.mainloop()
-            print("line 89 after mainloop")
-        
+        """
         create_Window()
         print("Line 91 created window")
    
