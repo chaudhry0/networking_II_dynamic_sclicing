@@ -15,7 +15,7 @@
     <a href="https://github.com/github_username/repo_name"><strong>Explore the documents »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/github_username/repo_name">View video Demo</a>
+    <a href="https://www.youtube.com/watch?v=mKPfAVHFmTE">View video Demo</a>
     ·
     <a href="https://github.com/github_username/repo_name/issues">Report Bug</a>
     ·
@@ -51,7 +51,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![GUI image][GUI]](https://github.com/chaudhry0/networking_II_dynamic_sclicing/GUI.png)
+[![GUI image][GUI]](https://github.com/chaudhry0/networking_II_dynamic_sclicing/blob/main/images/GUI.png)
 
 On Demand SDN Slices in ComNetsEmu is a project aimed at implementing a network slicing approach that allows for dynamic activation and de-activation of network slices via command line interface (CLI) or graphical user interface (GUI) commands. The goal of this project is to provide a flexible and efficient way to manage network resources in a virtualized environment.
 
@@ -147,7 +147,7 @@ Project Link: [On Demand Network Slicing](https://github.com/chaudhry0/networkin
 
 Thank you for visiting our page!
 
-[GUI]: images/GUI.jpg
+[GUI]: images/GUI.png
 [Python-logo]: https://img.shields.io/badge/-Python-F9DC3E.svg?logo=python&style=flat
 [Python-url]: https://www.python.org/doc/
 [VSC-logo]: https://img.shields.io/badge/-Visual%20Studio%20Code-007ACC.svg?logo=visual-studio-code&style=flat
