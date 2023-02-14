@@ -36,7 +36,7 @@ class TrafficSlicing(app_manager.RyuApp):
         self.hardTimeout = 60
         self.boolWindowsOpen = False
         self.boolDeleteFlows = False   
-        self.boolDisableDeleteButton = True     
+        self.boolFirstTimeOpen = True     
         self.current_scenario = 1
         self.images = []
         self.scale_factor = 3
@@ -161,9 +161,9 @@ class TrafficSlicing(app_manager.RyuApp):
             delete_button.pack(pady=5)
             
             #Disable the delete button only for the first time
-            if(self.boolDisableDeleteButton == True):
+            if(self.boolFirstTimeOpen == True):
                 delete_button.config(state="disabled")
-                self.boolDisableDeleteButton = False
+                self.boolFirstTimeOpen = False
 
             # Use a button to start
             start_button = tk.Button(root, text="Start", font=("Helvetica", 14), command=lambda: start(root, interval_entry))
@@ -469,14 +469,22 @@ class TrafficSlicing(app_manager.RyuApp):
         ### The program will wait here until the GUI window is closed
    
         def call_every_interval_seconds():
-            timer = threading.Timer(self.interval, call_every_interval_seconds)
-            timer.start()
             print("call my_function from call_every_interval_seconds function")
             my_function()
+            # Schedule the next call to this function after self.interval seconds
+            timer = threading.Timer(self.interval, call_every_interval_seconds)
+            timer.start()
 
-        print("Line 99 before timer")
+        # Start the first timer to call the function after self.interval seconds
         timer = threading.Timer(self.interval, call_every_interval_seconds)
         timer.start()
+        
+        
+        
+            
+        #call_every_interval_seconds()
+        print("Line 99 before timer")
+
         
         
     def show_image(self, image_label, index):
@@ -596,7 +604,7 @@ class TrafficSlicing(app_manager.RyuApp):
         )
         datapath.send_msg(out)
         print("Sending packet to switch: ", datapath.id)
-        print("message type: ", msg.msg_type)
+        #print("message type: ", msg.msg_type)
         #print("OUT", out)
 
       
