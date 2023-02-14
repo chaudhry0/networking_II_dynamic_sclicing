@@ -38,7 +38,7 @@ class TrafficSlicing(app_manager.RyuApp):
         self.boolDeleteFlows = False        
         self.current_scenario_image = 0
         self.images = []
-        # Reduce image size by %
+        # Reduce image size by a factor of 2
         self.scale_factor = 2
         
         def start(root, interval_entry):
