@@ -35,11 +35,13 @@ class TrafficSlicing(app_manager.RyuApp):
         self.idleTimeout = 30
         self.hardTimeout = 60
         self.boolWindowsOpen = False
-        self.boolDeleteFlows = False        
-        self.current_scenario = 0
+        self.boolDeleteFlows = False   
+        self.boolDisableDeleteButton = True     
+        self.current_scenario = 1
         self.images = []
-        self.scale_factor = 5
+        self.scale_factor = 3
         self.scenario_names = ["Normal", "Emergency", "Administration + Normal", "Administration + Emergency"]
+        self.background_color = "#F7F7F7"
 
         
         def start(root, interval_entry):
@@ -74,48 +76,56 @@ class TrafficSlicing(app_manager.RyuApp):
             self.boolWindowsOpen = True
             print("windows_Opwn should be TRUE: ", self.boolWindowsOpen)
             root = tk.Tk()
-            root.title("Select Scenario")
-            root.configure(background='#F7F7F7')
+            
+            #root.iconbitmap("images/logos_and_icons/logo.ico")
+            ico = Image.open('images/logos_and_icons/logo.ico')
+            photo = ImageTk.PhotoImage(ico)
+            root.wm_iconphoto(False, photo)
+            
+            screen_width = root.winfo_screenwidth()  # Width of the screen
+            screen_height = root.winfo_screenheight() # Height of the screen
+            
+            width = screen_width * (3/4) # Width 
+            height = screen_height # Height
+            
+            root.geometry('%dx%d+%d+%d' % (width, height, (screen_width-width)/2, 0))
+            
+            #root.eval('tk::PlaceWindow . center')
+            root.title("On Demand Network Slicing - Sleceted Scenario: ")
+            root.configure(background=self.background_color)
 
             # Use a label as a header
-            header = tk.Label(root, text="Select Scenario", font=("Helvetica", 22), bg='#F7F7F7')
-            header.pack(pady=20)
+            header = tk.Label(root, text="Select Scenario", font=("Helvetica", 22), bg=self.background_color)
+            header.pack(pady=15)
 
             # Create a frame to contain the buttons
-            frame = tk.Frame(root, bg='#F7F7F7')
+            frame = tk.Frame(root, bg=self.background_color)
             frame.pack(pady=10)
 
             # Create the buttons with a different font and padding
-            normal_button = tk.Button(frame, text="Normal", font=("Helvetica", 16), padx=20, pady=10, command=lambda: self.select_case(1))
+            normal_button = tk.Button(frame, text="Normal",  font=("Helvetica", 16), padx=20, pady=10, command=lambda: [self.select_case(1), update_interface()])
             normal_button.pack(side=tk.LEFT)
 
-            emergency_button = tk.Button(frame, text="Emergency", font=("Helvetica", 16), padx=20, pady=10, command=lambda: self.select_case(2))
+            emergency_button = tk.Button(frame, text="Emergency", font=("Helvetica", 16), padx=20, pady=10, command=lambda: [self.select_case(2), update_interface()])
             emergency_button.pack(side=tk.LEFT)
 
-            administration_normal_button = tk.Button(frame, text="Admin + Normal", font=("Helvetica", 16), padx=20, pady=10, command=lambda: self.select_case(3))
+            administration_normal_button = tk.Button(frame, text="Admin + Normal", font=("Helvetica", 16), padx=20, pady=10, command=lambda: [self.select_case(3), update_interface()])
             administration_normal_button.pack(side=tk.LEFT)
 
-            administration_emergency_button = tk.Button(frame, text="Admin + Emergency", font=("Helvetica", 16), padx=20, pady=10, command=lambda: self.select_case(4))
+            administration_emergency_button = tk.Button(frame, text="Admin + Emergency", font=("Helvetica", 16), padx=20, pady=10, command=lambda: [self.select_case(4), update_interface()])
             administration_emergency_button.pack(side=tk.LEFT)
 
             # Create a frame to contain the images
-            images_frame = tk.Frame(root, bg='#F7F7F7')
-            images_frame.pack(pady=20)
+            images_frame = tk.Frame(root, bg=self.background_color)
+            images_frame.pack(pady=15)
 
-            # Create a label to display the images
-            image_label = tk.Label(images_frame, bg='#F7F7F7')
-            image_label.pack(side=tk.LEFT, padx=20)
-
-            # Create a button to navigate between the images
-            back_button = tk.Button(images_frame, text="<", font=("Helvetica", 18), bg='#F7F7F7', command=lambda: self.previous_scenario(image_label))
+            # Create a button (LEFT) to navigate between the images
+            back_button = tk.Button(images_frame, text="<", font=("Helvetica", 18), bg=self.background_color, command=lambda: [self.previous_scenario(image_label), update_interface()])
             back_button.pack(side=tk.LEFT)
-
-            forward_button = tk.Button(images_frame, text=">", font=("Helvetica", 18), bg='#F7F7F7', command=lambda: self.next_scenario(image_label))
-            forward_button.pack(side=tk.LEFT, padx=20)
-
-            # Create a label to display the current scenario
-            current_scenario_label = tk.Label(root, text="Current Scenario: Normal", font=("Helvetica", 18), bg='#F7F7F7')
-            current_scenario_label.pack(pady=20)
+            
+            # Create a label to display the images
+            image_label = tk.Label(images_frame, bg=self.background_color)
+            image_label.pack(side=tk.LEFT, padx=15)
 
             # Load the images
             self.images = [
@@ -128,31 +138,44 @@ class TrafficSlicing(app_manager.RyuApp):
             # Show the first image
             self.show_image(image_label, 0)
 
-            # Use a label and entry for the interval
-            interval_frame = tk.Frame(root, bg='#F7F7F7')
-            interval_frame.pack(pady=20)
+            # Create a button (RIGHT) to navigate between the images
+            forward_button = tk.Button(images_frame, text=">", font=("Helvetica", 18), bg=self.background_color, command=lambda: [self.next_scenario(image_label), update_interface()])
+            forward_button.pack(side=tk.LEFT, padx=20)
 
-            interval_label = tk.Label(interval_frame, text="Interval (seconds) for next GUI WINDOW:", font=("Helvetica", 14))
+            # Create a label to display the current scenario
+            #current_scenario_label = tk.Label(root, text="Current Scenario: Normal", font=("Helvetica", 12), bg=self.background_color)
+            #current_scenario_label.pack(pady=5)
+
+            # Use a label and entry for the interval
+            interval_frame = tk.Frame(root, bg=self.background_color)
+            interval_frame.pack(pady=5)
+
+            interval_label = tk.Label(interval_frame, text="Interval (seconds) for next GUI WINDOW:", font=("Helvetica", 12), bg=self.background_color)
             interval_label.pack(side=tk.LEFT)
-            interval_entry = tk.Entry(interval_frame, font=("Helvetica", 14), width=10)
+            interval_entry = tk.Entry(interval_frame, font=("Helvetica", 12), width=10)
             interval_entry.insert(0, "60")
-            interval_entry.pack(side=tk.LEFT, padx=10)
+            interval_entry.pack(side=tk.LEFT, padx=5)
 
             # Use a button to delete flows
             delete_button = tk.Button(root, text="Delete Flows", font=("Helvetica", 14), command=lambda: deleteFlows())
-            delete_button.pack(pady=10)
+            delete_button.pack(pady=5)
+            
+            #Disable the delete button only for the first time
+            if(self.boolDisableDeleteButton == True):
+                delete_button.config(state="disabled")
+                self.boolDisableDeleteButton = False
 
             # Use a button to start
             start_button = tk.Button(root, text="Start", font=("Helvetica", 14), command=lambda: start(root, interval_entry))
-            start_button.pack(pady=10)
+            start_button.pack(pady=5)
 
             # Use a label to display the selected scenario
-            selected_scenario_label = tk.Label(root, text="Selected Scenario: ", font=("Helvetica", 14))
-            selected_scenario_label.pack(pady=10)
+            selected_scenario_label = tk.Label(root, text="Selected Scenario: ", font=("Helvetica", 10), bg=self.background_color)
+            selected_scenario_label.pack(pady=5)
 
             # Function to update the selected scenario label
             def update_selected_scenario_label():
-                selected_scenario_label.config(text="Selected Scenario: " + self.scenario_names[self.current_scenario])
+                selected_scenario_label.config(text="Selected Scenario: " + self.scenario_names[self.current_scenario - 1])
 
             # Create a function to update the interface with the selected scenario
             def update_interface():
@@ -161,21 +184,32 @@ class TrafficSlicing(app_manager.RyuApp):
 
                 # Show the correct image
                 self.show_image(image_label, self.current_scenario)
+                
+                # select the correct case to update the self.slice_to_port
+                self.select_case(self.current_scenario)
 
                 # Disable the back button if we're on the first scenario
-                if self.current_scenario == 0:
+                if self.current_scenario == 1:
                     back_button.config(state=tk.DISABLED)
                 else:
                     back_button.config(state=tk.NORMAL)
 
                 # Disable the forward button if we're on the last scenario
-                if self.current_scenario == len(self.images) - 1:
+                if self.current_scenario == len(self.images):
                     forward_button.config(state=tk.DISABLED)
                 else:
                     forward_button.config(state=tk.NORMAL)
+                
+                #Disable the current selectd scenario button
+                buttons = [normal_button, emergency_button, administration_normal_button, administration_emergency_button]
+                for i in range(4):
+                    if i == self.current_scenario - 1:
+                        buttons[i].config(state=tk.DISABLED)
+                    else:
+                        buttons[i].config(state=tk.NORMAL)
 
                 # Update the window title with the selected scenario
-                root.title("Select Scenario - " + self.scenario_names[self.current_scenario])
+                root.title("On Demand Network Slicing - Selected Scenario: " + self.scenario_names[self.current_scenario - 1])
 
             # Call the function to update the interface with the initial scenario
             update_interface()
@@ -432,6 +466,7 @@ class TrafficSlicing(app_manager.RyuApp):
         
         create_Window()
         
+        ### The program will wait here until the GUI window is closed
    
         def call_every_interval_seconds():
             timer = threading.Timer(self.interval, call_every_interval_seconds)
@@ -445,15 +480,17 @@ class TrafficSlicing(app_manager.RyuApp):
         
         
     def show_image(self, image_label, index):
-        image_label.config(image=self.images[index])
+        image_label.config(image=self.images[index - 1])
     
     def next_scenario(self, image_label):
-        self.current_scenario = (self.current_scenario + 1) % 4
-        image_label.config(image=self.images[self.current_scenario])
+        self.current_scenario = (self.current_scenario + 1) #% 5
+        self.show_image(image_label, self.current_scenario)
+        #image_label.config(image=self.images[self.current_scenario])
 
     def previous_scenario(self, image_label):
-        self.current_scenario = (self.current_scenario - 1) % 4
-        image_label.config(image=self.images[self.current_scenario]) 
+        self.current_scenario = (self.current_scenario - 1) #% 5
+        self.show_image(image_label, self.current_scenario)
+        #image_label.config(image=self.images[self.current_scenario]) 
        
     def print_slice_to_port(self):
         #print dict self.slice_to_port
@@ -512,6 +549,7 @@ class TrafficSlicing(app_manager.RyuApp):
             3: self.administration_normal,
             4: self.administration_emergency
         }
+        self.current_scenario = case
         return options.get(case, lambda: print("Invalid option"))()
     
 
