@@ -147,7 +147,7 @@ Project Link: [On Demand Network Slicing](https://github.com/chaudhry0/networkin
 
 Thank you for visiting our page!
 
-[GUI]: images/GUI.jpg
+[GUI]: images/GUI.png
 [Python-logo]: https://img.shields.io/badge/-Python-F9DC3E.svg?logo=python&style=flat
 [Python-url]: https://www.python.org/doc/
 [VSC-logo]: https://img.shields.io/badge/-Visual%20Studio%20Code-007ACC.svg?logo=visual-studio-code&style=flat
