@@ -36,10 +36,11 @@ class TrafficSlicing(app_manager.RyuApp):
         self.hardTimeout = 60
         self.boolWindowsOpen = False
         self.boolDeleteFlows = False        
-        self.current_scenario_image = 0
+        self.current_scenario = 0
         self.images = []
-        # Reduce image size by a factor of 2
-        self.scale_factor = 2
+        self.scale_factor = 5
+        self.scenario_names = ["Normal", "Emergency", "Administration + Normal", "Administration + Emergency"]
+
         
         def start(root, interval_entry):
             # close the window so the application can start
@@ -69,7 +70,126 @@ class TrafficSlicing(app_manager.RyuApp):
             self.boolDeleteFlows = True
             print("boolDeleteFlows should be TRUE: ", self.boolDeleteFlows)
         
-    
+        def create_Window():
+            self.boolWindowsOpen = True
+            print("windows_Opwn should be TRUE: ", self.boolWindowsOpen)
+            root = tk.Tk()
+            root.title("Select Scenario")
+            root.configure(background='#F7F7F7')
+
+            # Use a label as a header
+            header = tk.Label(root, text="Select Scenario", font=("Helvetica", 22), bg='#F7F7F7')
+            header.pack(pady=20)
+
+            # Create a frame to contain the buttons
+            frame = tk.Frame(root, bg='#F7F7F7')
+            frame.pack(pady=10)
+
+            # Create the buttons with a different font and padding
+            normal_button = tk.Button(frame, text="Normal", font=("Helvetica", 16), padx=20, pady=10, command=lambda: self.select_case(1))
+            normal_button.pack(side=tk.LEFT)
+
+            emergency_button = tk.Button(frame, text="Emergency", font=("Helvetica", 16), padx=20, pady=10, command=lambda: self.select_case(2))
+            emergency_button.pack(side=tk.LEFT)
+
+            administration_normal_button = tk.Button(frame, text="Admin + Normal", font=("Helvetica", 16), padx=20, pady=10, command=lambda: self.select_case(3))
+            administration_normal_button.pack(side=tk.LEFT)
+
+            administration_emergency_button = tk.Button(frame, text="Admin + Emergency", font=("Helvetica", 16), padx=20, pady=10, command=lambda: self.select_case(4))
+            administration_emergency_button.pack(side=tk.LEFT)
+
+            # Create a frame to contain the images
+            images_frame = tk.Frame(root, bg='#F7F7F7')
+            images_frame.pack(pady=20)
+
+            # Create a label to display the images
+            image_label = tk.Label(images_frame, bg='#F7F7F7')
+            image_label.pack(side=tk.LEFT, padx=20)
+
+            # Create a button to navigate between the images
+            back_button = tk.Button(images_frame, text="<", font=("Helvetica", 18), bg='#F7F7F7', command=lambda: self.previous_scenario(image_label))
+            back_button.pack(side=tk.LEFT)
+
+            forward_button = tk.Button(images_frame, text=">", font=("Helvetica", 18), bg='#F7F7F7', command=lambda: self.next_scenario(image_label))
+            forward_button.pack(side=tk.LEFT, padx=20)
+
+            # Create a label to display the current scenario
+            current_scenario_label = tk.Label(root, text="Current Scenario: Normal", font=("Helvetica", 18), bg='#F7F7F7')
+            current_scenario_label.pack(pady=20)
+
+            # Load the images
+            self.images = [
+                PhotoImage(file="images/scenario1/Normal_Scenario.png").subsample(self.scale_factor),
+                PhotoImage(file="images/scenario2/Emergency_Scenario.png").subsample(self.scale_factor),
+                PhotoImage(file="images/scenario3/Administration_Scenario.png").subsample(self.scale_factor),
+                PhotoImage(file="images/scenario4/Administration_with_Emergency_Scenario.png").subsample(self.scale_factor)
+            ] 
+
+            # Show the first image
+            self.show_image(image_label, 0)
+
+            # Use a label and entry for the interval
+            interval_frame = tk.Frame(root, bg='#F7F7F7')
+            interval_frame.pack(pady=20)
+
+            interval_label = tk.Label(interval_frame, text="Interval (seconds) for next GUI WINDOW:", font=("Helvetica", 14))
+            interval_label.pack(side=tk.LEFT)
+            interval_entry = tk.Entry(interval_frame, font=("Helvetica", 14), width=10)
+            interval_entry.insert(0, "60")
+            interval_entry.pack(side=tk.LEFT, padx=10)
+
+            # Use a button to delete flows
+            delete_button = tk.Button(root, text="Delete Flows", font=("Helvetica", 14), command=lambda: deleteFlows())
+            delete_button.pack(pady=10)
+
+            # Use a button to start
+            start_button = tk.Button(root, text="Start", font=("Helvetica", 14), command=lambda: start(root, interval_entry))
+            start_button.pack(pady=10)
+
+            # Use a label to display the selected scenario
+            selected_scenario_label = tk.Label(root, text="Selected Scenario: ", font=("Helvetica", 14))
+            selected_scenario_label.pack(pady=10)
+
+            # Function to update the selected scenario label
+            def update_selected_scenario_label():
+                selected_scenario_label.config(text="Selected Scenario: " + self.scenario_names[self.current_scenario])
+
+            # Create a function to update the interface with the selected scenario
+            def update_interface():
+                # Update the selected scenario label
+                update_selected_scenario_label()
+
+                # Show the correct image
+                self.show_image(image_label, self.current_scenario)
+
+                # Disable the back button if we're on the first scenario
+                if self.current_scenario == 0:
+                    back_button.config(state=tk.DISABLED)
+                else:
+                    back_button.config(state=tk.NORMAL)
+
+                # Disable the forward button if we're on the last scenario
+                if self.current_scenario == len(self.images) - 1:
+                    forward_button.config(state=tk.DISABLED)
+                else:
+                    forward_button.config(state=tk.NORMAL)
+
+                # Update the window title with the selected scenario
+                root.title("Select Scenario - " + self.scenario_names[self.current_scenario])
+
+            # Call the function to update the interface with the initial scenario
+            update_interface()
+
+            # Confirm with the user before quitting the window
+            def on_closing():
+                if messagebox.askokcancel("Quit", "Do you want to quit?"):
+                    root.destroy()
+                    self.boolWindowsOpen = False
+                    print("windows_Open should be False: ", self.boolWindowsOpen)
+
+            root.protocol("WM_DELETE_WINDOW", on_closing)
+
+            root.mainloop()    
         """
         self.images = [
             PhotoImage(file="images/scenario1.png"),
@@ -78,7 +198,7 @@ class TrafficSlicing(app_manager.RyuApp):
             PhotoImage(file="images/scenario4.png")
         ] 
         """
-        
+        """
         def create_Window():
             self.boolWindowsOpen = True 
             print("windows_Opwn should be TRUE: ", self.boolWindowsOpen)
@@ -93,36 +213,38 @@ class TrafficSlicing(app_manager.RyuApp):
             header = tk.Label(root, text="Select Scenario", font=("Helvetica", 16))
             header.pack(pady=10)
 
-            """
+        """
+        """
             # Create a frame to contain the image
             image_frame = tk.Frame(root)
             image_frame.pack(pady=10)
 
-            if self.current_scenario_image < len(self.images):
-                image_label = tk.Label(image_frame, image=self.images[self.current_scenario_image])
+            if self.current_scenario < len(self.images):
+                image_label = tk.Label(image_frame, image=self.images[self.current_scenario])
                 image_label.pack(side=tk.LEFT)
             else:
                 image_label = tk.Label(image_frame, text="Error: No image available")
                 image_label.pack(side=tk.LEFT)
-            """
-            """
-            if self.current_scenario_image < len(self.images):
-                image_label = tk.Label(image_frame, image=self.images[self.current_scenario_image])
+        """
+        """
+            if self.current_scenario < len(self.images):
+                image_label = tk.Label(image_frame, image=self.images[self.current_scenario])
                 image_label.grid(row=0, column=0)
             else:
-                # Handle the error case where self.current_scenario_image is out of range
-                # You can display an error message or set the self.current_scenario_image to 0 or to the last element of the list
+                # Handle the error case where self.current_scenario is out of range
+                # You can display an error message or set the self.current_scenario to 0 or to the last element of the list
                 image_label = tk.Label(image_frame, text="Error: No image available")
                 image_label.grid(row=0, column=0)    
-            """
-            """
+        """
+        """
             # Create buttons to navigate between the images
             previous_button = tk.Button(image_frame, text="<", font=("Helvetica", 14), command=lambda: self.previous_scenario(image_frame))
             previous_button.pack(side=tk.LEFT, padx=10)
 
             next_button = tk.Button(image_frame, text=">", font=("Helvetica", 14), command=lambda: self.next_scenario(image_frame))
             next_button.pack(side=tk.LEFT, padx=10)
-            """
+        """
+        """
             # Create a frame to contain the buttons
             frame = tk.Frame(root, relief=tk.SUNKEN, bd=2)
             frame.pack(pady=10)
@@ -155,14 +277,15 @@ class TrafficSlicing(app_manager.RyuApp):
             forward_button = tk.Button(images_frame, text=">", font=("Helvetica", 14), command=lambda: self.next_scenario(image_label))
             forward_button.pack(side=tk.LEFT, padx=10)
 
-            
-            # Load the images
-            """
+        """
+            # Load the images            
+        """
             self.images = [ImageTk.PhotoImage(Image.open("images/scenario1.png")),
                         ImageTk.PhotoImage(Image.open("images/scenario2.png")),
                         ImageTk.PhotoImage(Image.open("images/scenario3.png")),
                         ImageTk.PhotoImage(Image.open("images/scenario4.png"))]
-            """
+        """
+        """
             self.images = [
                 PhotoImage(file="images/scenario1/Normal_Scenario.png").subsample(self.scale_factor),
                 PhotoImage(file="images/scenario2/Emergency_Scenario.png").subsample(self.scale_factor),
@@ -201,7 +324,7 @@ class TrafficSlicing(app_manager.RyuApp):
             root.protocol("WM_DELETE_WINDOW", on_closing)
 
             root.mainloop()
-                   
+        """           
         """
         def create_Window():
             self.boolWindowsOpen = True 
@@ -325,12 +448,12 @@ class TrafficSlicing(app_manager.RyuApp):
         image_label.config(image=self.images[index])
     
     def next_scenario(self, image_label):
-        self.current_scenario_image = (self.current_scenario_image + 1) % 4
-        image_label.config(image=self.images[self.current_scenario_image])
+        self.current_scenario = (self.current_scenario + 1) % 4
+        image_label.config(image=self.images[self.current_scenario])
 
     def previous_scenario(self, image_label):
-        self.current_scenario_image = (self.current_scenario_image - 1) % 4
-        image_label.config(image=self.images[self.current_scenario_image]) 
+        self.current_scenario = (self.current_scenario - 1) % 4
+        image_label.config(image=self.images[self.current_scenario]) 
        
     def print_slice_to_port(self):
         #print dict self.slice_to_port
