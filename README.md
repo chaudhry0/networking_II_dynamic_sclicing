@@ -4,7 +4,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/chaudhry0/networking_II_dynamic_sclicing/">
-    <img src="images/Color logo - no background.png" alt="Logo" width="400" height="100">
+    <img src="images/logos_and_icons/logo.png" alt="Logo" width="400" height="100">
   </a>
 
 <h3 align="center">On Demand SDN Slices in ComNetsEmu</h3>
