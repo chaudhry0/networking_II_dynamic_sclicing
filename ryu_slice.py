@@ -38,6 +38,8 @@ class TrafficSlicing(app_manager.RyuApp):
         self.boolDeleteFlows = False        
         self.current_scenario_image = 0
         self.images = []
+        # Reduce image size by %
+        self.scale_factor = 2
         
         def start(root, interval_entry):
             # close the window so the application can start
@@ -91,6 +93,7 @@ class TrafficSlicing(app_manager.RyuApp):
             header = tk.Label(root, text="Select Scenario", font=("Helvetica", 16))
             header.pack(pady=10)
 
+            """
             # Create a frame to contain the image
             image_frame = tk.Frame(root)
             image_frame.pack(pady=10)
@@ -101,7 +104,7 @@ class TrafficSlicing(app_manager.RyuApp):
             else:
                 image_label = tk.Label(image_frame, text="Error: No image available")
                 image_label.pack(side=tk.LEFT)
-            
+            """
             """
             if self.current_scenario_image < len(self.images):
                 image_label = tk.Label(image_frame, image=self.images[self.current_scenario_image])
@@ -112,13 +115,14 @@ class TrafficSlicing(app_manager.RyuApp):
                 image_label = tk.Label(image_frame, text="Error: No image available")
                 image_label.grid(row=0, column=0)    
             """
+            """
             # Create buttons to navigate between the images
             previous_button = tk.Button(image_frame, text="<", font=("Helvetica", 14), command=lambda: self.previous_scenario(image_frame))
             previous_button.pack(side=tk.LEFT, padx=10)
 
             next_button = tk.Button(image_frame, text=">", font=("Helvetica", 14), command=lambda: self.next_scenario(image_frame))
             next_button.pack(side=tk.LEFT, padx=10)
-
+            """
             # Create a frame to contain the buttons
             frame = tk.Frame(root, relief=tk.SUNKEN, bd=2)
             frame.pack(pady=10)
@@ -153,11 +157,18 @@ class TrafficSlicing(app_manager.RyuApp):
 
             
             # Load the images
+            """
             self.images = [ImageTk.PhotoImage(Image.open("images/scenario1.png")),
                         ImageTk.PhotoImage(Image.open("images/scenario2.png")),
                         ImageTk.PhotoImage(Image.open("images/scenario3.png")),
                         ImageTk.PhotoImage(Image.open("images/scenario4.png"))]
-            
+            """
+            self.images = [
+                PhotoImage(file="images/scenario1/Normal_Scenario.png").subsample(self.scale_factor),
+                PhotoImage(file="images/scenario2/Emergency_Scenario.png").subsample(self.scale_factor),
+                PhotoImage(file="images/scenario3/Administration_Scenario.png").subsample(self.scale_factor),
+                PhotoImage(file="images/scenario4/Administration_with_Emergency_Scenario.png").subsample(self.scale_factor)
+            ] 
             # Show the first image
             self.show_image(image_label, 0)
 
