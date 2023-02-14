@@ -4,7 +4,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/chaudhry0/networking_II_dynamic_sclicing/">
-    <img src="images/Color logo - no background.png" alt="Logo" width="400" height="100">
+    <img src="images/logos_and_icons/logo.png" alt="Logo" width="400" height="100">
   </a>
 
 <h3 align="center">On Demand SDN Slices in ComNetsEmu</h3>
@@ -51,7 +51,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![GUI image][GUI]](https://github.com/chaudhry0/networking_II_dynamic_sclicing/GUI.jpg)
+[![GUI image][GUI]](https://github.com/chaudhry0/networking_II_dynamic_sclicing/GUI.png)
 
 On Demand SDN Slices in ComNetsEmu is a project aimed at implementing a network slicing approach that allows for dynamic activation and de-activation of network slices via command line interface (CLI) or graphical user interface (GUI) commands. The goal of this project is to provide a flexible and efficient way to manage network resources in a virtualized environment.
 
