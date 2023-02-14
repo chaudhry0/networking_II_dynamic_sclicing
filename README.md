@@ -15,7 +15,7 @@
     <a href="https://github.com/github_username/repo_name"><strong>Explore the documents »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/github_username/repo_name">View video Demo</a>
+    <a href="https://www.youtube.com/watch?v=mKPfAVHFmTE">View video Demo</a>
     ·
     <a href="https://github.com/github_username/repo_name/issues">Report Bug</a>
     ·
