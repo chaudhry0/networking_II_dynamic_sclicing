@@ -12,14 +12,14 @@
   <p align="center">
     powered by Unitn students
     <br />
-    <a href="https://github.com/github_username/repo_name"><strong>Explore the documents »</strong></a>
+    <a href="https://github.com/chaudhry0/networking_II_dynamic_sclicing"><strong>Explore the documents »</strong></a>
     <br />
     <br />
     <a href="https://www.youtube.com/watch?v=mKPfAVHFmTE">View video Demo</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues">Report Bug</a>
+    <a href="https://github.com/chaudhry0/networking_II_dynamic_sclicing/issues">Report Bug</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues">Request Feature</a>
+    <a href="https://github.com/chaudhry0/networking_II_dynamic_sclicing/issues">Request Feature</a>
   </p>
 </div>
 
