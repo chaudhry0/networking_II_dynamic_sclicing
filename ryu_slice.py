@@ -1,9 +1,8 @@
 from ryu.base import app_manager
 from ryu.controller import ofp_event
-from ryu.controller.handler import CONFIG_DISPATCHER, MAIN_DISPATCHER, DEAD_DISPATCHER
+from ryu.controller.handler import CONFIG_DISPATCHER, MAIN_DISPATCHER
 from ryu.controller.handler import set_ev_cls
 from ryu.ofproto import ofproto_v1_3
-from ryu.ofproto import ofproto_v1_3_parser
 import ryu.ofproto.ofproto_v1_3_parser as ofparser
 import ryu.ofproto.ofproto_v1_3 as ofp
 from ryu.lib.packet import packet
@@ -17,10 +16,6 @@ from tkinter.ttk import Button
 from PIL import Image, ImageTk
 import threading
 import time
-import requests
-
-
-
 
 class TrafficSlicing(app_manager.RyuApp):
     OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]
@@ -30,7 +25,6 @@ class TrafficSlicing(app_manager.RyuApp):
         print("TrafficSlicing __init__")
         self.switches = []
         self.datapath_list = []
-        self.dp = None
         self.interval = 360
         self.idleTimeout = 30
         self.hardTimeout = 60
@@ -43,7 +37,7 @@ class TrafficSlicing(app_manager.RyuApp):
         self.scenario_names = ["Normal", "Emergency", "Administration + Normal", "Administration + Emergency"]
         self.background_color = "#F7F7F7"
 
-        
+        # this function is called the start button is clicked
         def start(root, interval_entry):
             # close the window so the application can start
             self.interval = int(interval_entry.get())
@@ -60,18 +54,19 @@ class TrafficSlicing(app_manager.RyuApp):
                 self.boolDeleteFlows = False
 
  
-
+        #this function is like a thread that runs the create_window function if it is not already open
         def my_function():
             if(self.boolWindowsOpen == False):
               print("windows_Opwn should be FALSE: ", self.boolWindowsOpen)
               create_Window()
             
-        
+        # this function set the boolDeleteFlows to true so that the flows are deleted when the start button is clicked
         def deleteFlows():
             print("deleteFlows Function called") 
             self.boolDeleteFlows = True
             print("boolDeleteFlows should be TRUE: ", self.boolDeleteFlows)
         
+        # This is the main window that is opened when the application starts, it is the GUI
         def create_Window():
             self.boolWindowsOpen = True
             print("windows_Opwn should be TRUE: ", self.boolWindowsOpen)
@@ -210,6 +205,11 @@ class TrafficSlicing(app_manager.RyuApp):
 
                 # Update the window title with the selected scenario
                 root.title("On Demand Network Slicing - Selected Scenario: " + self.scenario_names[self.current_scenario - 1])
+                # print the selected scenario
+                print("Selected Scenario: " + self.scenario_names[self.current_scenario - 1])
+                print("Self.current_scenario: ", self.current_scenario)
+                self.print_slice_to_port()
+                
 
             # Call the function to update the interface with the initial scenario
             update_interface()
@@ -223,251 +223,15 @@ class TrafficSlicing(app_manager.RyuApp):
 
             root.protocol("WM_DELETE_WINDOW", on_closing)
 
+            # show windw with while loop
             root.mainloop()    
-        """
-        self.images = [
-            PhotoImage(file="images/scenario1.png"),
-            PhotoImage(file="images/scenario2.png"),
-            PhotoImage(file="images/scenario3.png"),
-            PhotoImage(file="images/scenario4.png")
-        ] 
-        """
-        """
-        def create_Window():
-            self.boolWindowsOpen = True 
-            print("windows_Opwn should be TRUE: ", self.boolWindowsOpen)
-            root = tk.Tk()
-            root.title("Select Case")
-            #root.configure(background='white')
-            
-            #display_frame = tk.Frame(root, bg='white')
-            #display_frame.pack(fill=tk.BOTH, expand=True)
-            
-            # Use a label as a header
-            header = tk.Label(root, text="Select Scenario", font=("Helvetica", 16))
-            header.pack(pady=10)
-
-        """
-        """
-            # Create a frame to contain the image
-            image_frame = tk.Frame(root)
-            image_frame.pack(pady=10)
-
-            if self.current_scenario < len(self.images):
-                image_label = tk.Label(image_frame, image=self.images[self.current_scenario])
-                image_label.pack(side=tk.LEFT)
-            else:
-                image_label = tk.Label(image_frame, text="Error: No image available")
-                image_label.pack(side=tk.LEFT)
-        """
-        """
-            if self.current_scenario < len(self.images):
-                image_label = tk.Label(image_frame, image=self.images[self.current_scenario])
-                image_label.grid(row=0, column=0)
-            else:
-                # Handle the error case where self.current_scenario is out of range
-                # You can display an error message or set the self.current_scenario to 0 or to the last element of the list
-                image_label = tk.Label(image_frame, text="Error: No image available")
-                image_label.grid(row=0, column=0)    
-        """
-        """
-            # Create buttons to navigate between the images
-            previous_button = tk.Button(image_frame, text="<", font=("Helvetica", 14), command=lambda: self.previous_scenario(image_frame))
-            previous_button.pack(side=tk.LEFT, padx=10)
-
-            next_button = tk.Button(image_frame, text=">", font=("Helvetica", 14), command=lambda: self.next_scenario(image_frame))
-            next_button.pack(side=tk.LEFT, padx=10)
-        """
-        """
-            # Create a frame to contain the buttons
-            frame = tk.Frame(root, relief=tk.SUNKEN, bd=2)
-            frame.pack(pady=10)
-
-            # Create the buttons with a different font and padding
-            normal_button = tk.Button(frame, text="Normal", font=("Helvetica", 14), padx=10, command=lambda: self.select_case(1))
-            normal_button.pack(side=tk.LEFT, padx=10)
-
-            emergency_button = tk.Button(frame, text="Emergency", font=("Helvetica", 14), padx=10, command=lambda: self.select_case(2))
-            emergency_button.pack(side=tk.LEFT, padx=10)
-
-            administration_normal_button = tk.Button(frame, text="Administration + Normal", font=("Helvetica", 14), padx=10, command=lambda: self.select_case(3))
-            administration_normal_button.pack(side=tk.LEFT, padx=10)
-
-            administration_emergency_button = tk.Button(frame, text="Administration + Emergency", font=("Helvetica", 14), padx=10, command=lambda: self.select_case(4))
-            administration_emergency_button.pack(side=tk.LEFT, padx=10)
-
-            # Create a frame to contain the images
-            images_frame = tk.Frame(root)
-            images_frame.pack(pady=10)
-
-            # Create a label to display the images
-            image_label = tk.Label(images_frame)
-            image_label.pack(side=tk.LEFT)
-
-            # Create a button to navigate between the images
-            back_button = tk.Button(images_frame, text="<", font=("Helvetica", 14), command=lambda: self.previous_scenario(image_label))
-            back_button.pack(side=tk.LEFT, padx=10)
-
-            forward_button = tk.Button(images_frame, text=">", font=("Helvetica", 14), command=lambda: self.next_scenario(image_label))
-            forward_button.pack(side=tk.LEFT, padx=10)
-
-        """
-            # Load the images            
-        """
-            self.images = [ImageTk.PhotoImage(Image.open("images/scenario1.png")),
-                        ImageTk.PhotoImage(Image.open("images/scenario2.png")),
-                        ImageTk.PhotoImage(Image.open("images/scenario3.png")),
-                        ImageTk.PhotoImage(Image.open("images/scenario4.png"))]
-        """
-        """
-            self.images = [
-                PhotoImage(file="images/scenario1/Normal_Scenario.png").subsample(self.scale_factor),
-                PhotoImage(file="images/scenario2/Emergency_Scenario.png").subsample(self.scale_factor),
-                PhotoImage(file="images/scenario3/Administration_Scenario.png").subsample(self.scale_factor),
-                PhotoImage(file="images/scenario4/Administration_with_Emergency_Scenario.png").subsample(self.scale_factor)
-            ] 
-            # Show the first image
-            self.show_image(image_label, 0)
-
-            # Use a label and entry for the interval
-            interval_frame = tk.Frame(root)
-            interval_frame.pack(pady=10)
-
-            interval_label = tk.Label(interval_frame, text="Interval (seconds) for next GUI WINDOW:", font=("Helvetica", 14))
-            interval_label.pack(side=tk.LEFT)
-
-            interval_entry = tk.Entry(interval_frame, font=("Helvetica", 14), width=10)
-            interval_entry.insert(0, "60")
-            interval_entry.pack(side=tk.LEFT, padx=10)
-
-            # Use a button to delete flows
-            delete_button = tk.Button(root, text="Delete Flows", font=("Helvetica", 14), command=lambda: deleteFlows())
-            delete_button.pack(pady=10)
-
-            # Use a button to start
-            start_button = tk.Button(root, text="Start", font=("Helvetica", 14), command=lambda: start(root, interval_entry))
-            start_button.pack(pady=10)
-
-            # Confirm with the user before quitting the window
-            def on_closing():
-                if messagebox.askokcancel("Quit", "Do you want to quit?"):
-                    root.destroy()
-                    self.boolWindowsOpen = False
-                    print("windows_Open should be False: ", self.boolWindowsOpen)
-
-            root.protocol("WM_DELETE_WINDOW", on_closing)
-
-            root.mainloop()
-        """           
-        """
-        def create_Window():
-            self.boolWindowsOpen = True 
-            print("windows_Opwn should be TRUE: ", self.boolWindowsOpen)
-            root = tk.Tk()
-            root.title("Select Case")
-
-            # Use a label as a header
-            header = tk.Label(root, text="Select Scenario", font=("Helvetica", 16))
-            header.pack(pady=10)
-
-            # Create a frame to contain the buttons
-            frame = tk.Frame(root, relief=tk.SUNKEN, bd=2)
-            frame.pack(pady=10)
-
-            # Create the buttons with a different font and padding
-            normal_button = tk.Button(frame, text="Normal", font=("Helvetica", 14), padx=10, command=lambda: self.select_case(1))
-            normal_button.pack(side=tk.LEFT, padx=10)
-
-            emergency_button = tk.Button(frame, text="Emergency", font=("Helvetica", 14), padx=10, command=lambda: self.select_case(2))
-            emergency_button.pack(side=tk.LEFT, padx=10)
-
-            administration_normal_button = tk.Button(frame, text="Administration + Normal", font=("Helvetica", 14), padx=10, command=lambda: self.select_case(3))
-            administration_normal_button.pack(side=tk.LEFT, padx=10)
-
-            administration_emergency_button = tk.Button(frame, text="Administration + Emergency", font=("Helvetica", 14), padx=10, command=lambda: self.select_case(4))
-            administration_emergency_button.pack(side=tk.LEFT, padx=10)
-            
-            # Use a label and entry for the interval
-            interval_frame = tk.Frame(root)
-            interval_frame.pack(pady=10)
-
-            interval_label = tk.Label(interval_frame, text="Interval (seconds) for next GUI WINDOW:", font=("Helvetica", 14))
-            interval_label.pack(side=tk.LEFT)
-
-            interval_entry = tk.Entry(interval_frame, font=("Helvetica", 14), width=10)
-            interval_entry.insert(0, "60")
-            interval_entry.pack(side=tk.LEFT, padx=10)
-            
-            # Use a button to delete flows
-            delete_button = tk.Button(root, text="Delete Flows", font=("Helvetica", 14), command=lambda: deleteFlows())
-            delete_button.pack(pady=10)
-            
-            # Use a button to start
-            start_button = tk.Button(root, text="Start", font=("Helvetica", 14), command=lambda: start(root, interval_entry))
-            start_button.pack(pady=10)
-    
-             # Confirm with the user before quitting the window
-            def on_closing():
-                if messagebox.askokcancel("Quit", "Do you want to quit?"):
-                    root.destroy()
-                    self.boolWindowsOpen = False
-                    print("windows_Opwn should be TRUE: ", self.boolWindowsOpen)
-
-            root.protocol("WM_DELETE_WINDOW", on_closing)
-
-            root.mainloop()
-                    
         
-        def create_Window():
-            self.boolWindowsOpen = True 
-            print("windows_Opwn should be TRUE: ", self.boolWindowsOpen)
-            root = tk.Tk()
-            root.title("Select Case")
-
-            frame = tk.Frame(root)
-            frame.pack()
-
-            normal_button = tk.Button(frame, text="Normal", command=lambda: self.select_case(1))
-            normal_button.pack(side=tk.LEFT)
-
-            emergency_button = tk.Button(frame, text="Emergency", command=lambda: self.select_case(2))
-            emergency_button.pack(side=tk.LEFT)
-
-            administration_normal_button = tk.Button(frame, text="Administration + Normal", command=lambda: self.select_case(3))
-            administration_normal_button.pack(side=tk.LEFT)
-
-            administration_emergency_button = tk.Button(frame, text="Administration + Emergency", command=lambda: self.select_case(4))
-            administration_emergency_button.pack(side=tk.LEFT)
-            
-            interval_label = tk.Label(root, text="Interval (seconds) for next GUI WINDOW:")
-            interval_label.pack()
-
-            
-            delete_button = tk.Button(root, text="Delete Flows", command=lambda: deleteFlows())
-            delete_button.pack()
-            
-            interval_entry = tk.Entry(root)
-            interval_entry.insert(0, "60")
-            interval_entry.pack()
-            
-            start_button = tk.Button(root, text="Start", command=lambda: start(root, interval_entry))
-            start_button.pack()
-            
-            def on_closing():
-                if messagebox.askokcancel("Quit", "Do you want to quit?"):
-                    root.destroy()
-                    self.boolWindowsOpen = False
-                    print("windows_Opwn should be TRUE: ", self.boolWindowsOpen)
-
-            root.protocol("WM_DELETE_WINDOW", on_closing)
-
-            root.mainloop()
-        """
-        
+        #first time creating the window
         create_Window()
         
-        ### The program will wait here until the GUI window is closed
-   
+        ### The program will wait here until the GUI window is closed (first time)
+
+        #thread that call the function every interval seconds
         def call_every_interval_seconds():
             print("call my_function from call_every_interval_seconds function")
             my_function()
@@ -479,54 +243,64 @@ class TrafficSlicing(app_manager.RyuApp):
         timer = threading.Timer(self.interval, call_every_interval_seconds)
         timer.start()
         
-        
-        
-            
-        #call_every_interval_seconds()
-        print("Line 99 before timer")
-
-        
-        
+    #this function is to show the image in the GUI window (correct image for the selected scenario)    
     def show_image(self, image_label, index):
         image_label.config(image=self.images[index - 1])
     
+    #this function is called when right button is clicked, it will show the next scenario
     def next_scenario(self, image_label):
         self.current_scenario = (self.current_scenario + 1) #% 5
         self.show_image(image_label, self.current_scenario)
         #image_label.config(image=self.images[self.current_scenario])
 
+    #this function is called when left button is clicked, it will show the previous scenario
     def previous_scenario(self, image_label):
         self.current_scenario = (self.current_scenario - 1) #% 5
         self.show_image(image_label, self.current_scenario)
         #image_label.config(image=self.images[self.current_scenario]) 
-       
+    
+    #his function is to print the dictionary self.slice_to_port   
     def print_slice_to_port(self):
         #print dict self.slice_to_port
         print("slice_to_port: ", self.slice_to_port)
 
+    #this function change the dictionary self.slice_to_port according to normal scenario
     def normal(self):
         print("normal scenario has been selected")
         self.slice_to_port = {
             1: {1:4, 4:1, 2:5, 5:2, 3:6, 6:3},
+            4: {1:4, 4:1, 2:5, 5:2, 3:6, 6:3},
             2: {1: 2, 2: 1},
             3: {1: 2, 2: 1},
-            4: {1:4, 4:1, 2:5, 5:2, 3:6, 6:3},
+            5: {1: 2, 2: 1},
+            6: {1: 2, 2: 1},
+            7: {1: 2, 2: 1},
+            8: {1: 2, 2: 1},
+            9: {1: 2, 2: 1},
+            10: {1: 2, 2: 1},
 
         }
-        self.print_slice_to_port()
+        #self.print_slice_to_port()
 
+    #this function change the dictionary self.slice_to_port according to emergency scenario
     def emergency(self):
         print("emergency scenario has been selected")
         self.slice_to_port = {
             1: {1:5, 5:1, 2:4, 4:2, 3:6, 6:3},
+            4: {1:5, 5:1, 2:4, 4:2, 3:6, 6:3},
             2: {1: 2, 2: 1},
             3: {1: 2, 2: 1},
-            4: {1:5, 5:1, 2:4, 4:2, 3:6, 6:3},
+            5: {1: 2, 2: 1},
+            6: {1: 2, 2: 1},
+            7: {1: 2, 2: 1},
+            8: {1: 2, 2: 1},
+            9: {1: 2, 2: 1},
+            10: {1: 2, 2: 1},
 
         }
         self.print_slice_to_port()
 
-
+    #this function change the dictionary self.slice_to_port according to administration_normal scenario
     def administration_normal(self):
         print("administration_normal scenario has been selected")
         self.slice_to_port = {
@@ -534,11 +308,17 @@ class TrafficSlicing(app_manager.RyuApp):
             4: {2:4, 4:2, 3:5, 5:3, 1:6, 6:1},
             2: {1: 2, 2: 1},
             3: {1: 2, 2: 1},            
-
+            5: {1: 2, 2: 1},
+            6: {1: 2, 2: 1},
+            7: {1: 2, 2: 1},
+            8: {1: 2, 2: 1},
+            9: {1: 2, 2: 1},
+            10: {1: 2, 2: 1},
+            
         }
-        self.print_slice_to_port()
+        #self.print_slice_to_port()
 
-
+    #this function change the dictionary self.slice_to_port according to administration_emergency scenario
     def administration_emergency(self):
         print("administration_emergency scenario has been selected")
         self.slice_to_port = {
@@ -546,10 +326,16 @@ class TrafficSlicing(app_manager.RyuApp):
             4: {1:5, 5:1, 2:6, 6:2, 3:4, 4:3},
             2: {1: 2, 2: 1},
             3: {1: 2, 2: 1},
-                    
+            5: {1: 2, 2: 1},
+            6: {1: 2, 2: 1},
+            7: {1: 2, 2: 1},
+            8: {1: 2, 2: 1},
+            9: {1: 2, 2: 1},
+            10: {1: 2, 2: 1},                    
         }
-        self.print_slice_to_port()
-            
+        #self.print_slice_to_port()
+    
+    #this function is to select the scenario according to the selected option        
     def select_case(self, case):
         options = {
             1: self.normal,
@@ -561,8 +347,7 @@ class TrafficSlicing(app_manager.RyuApp):
         return options.get(case, lambda: print("Invalid option"))()
     
 
-
-
+    # this the switch features handler
     @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER)
     def switch_features_handler(self, ev):
         datapath = ev.msg.datapath
@@ -576,6 +361,7 @@ class TrafficSlicing(app_manager.RyuApp):
         ]
         self.add_flow(datapath, 0, match, actions, 0, 0)
 
+    # this function is to add flow to the switch
     def add_flow(self, datapath, priority, match, actions, idleTimeout, hardTimeout):
         ofproto = datapath.ofproto
         parser = datapath.ofproto_parser
@@ -589,6 +375,7 @@ class TrafficSlicing(app_manager.RyuApp):
         print("Adding flow to switch: ", datapath.id)
         #print("MOD", mod)
 
+    #this function is to send packet to the switch
     def _send_package(self, msg, datapath, in_port, actions):
         data = None
         ofproto = datapath.ofproto
@@ -607,7 +394,7 @@ class TrafficSlicing(app_manager.RyuApp):
         #print("message type: ", msg.msg_type)
         #print("OUT", out)
 
-      
+   #this function is to remove all flows from the switch   
     def remove_all_flows_from_sw(self, datapath):
         ofp = datapath.ofproto
         ofp_parser = datapath.ofproto_parser
@@ -626,7 +413,8 @@ class TrafficSlicing(app_manager.RyuApp):
         datapath.send_msg(mod)
         print("Removing all flows from switch: ", datapath.id)
         print("MOD", mod)
-                
+    
+    #this is the packet in handler, main function of the controller           
     @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
     def _packet_in_handler(self, ev):
         msg = ev.msg
@@ -645,43 +433,8 @@ class TrafficSlicing(app_manager.RyuApp):
             self.add_flow(datapath, 1, match, actions, self.idleTimeout, self.hardTimeout)
             self._send_package(msg, datapath, in_port, actions)
         
-        """
-        if(self.boolDeleteFlows):
-            print("packet in handler: boolDeleteFlows = True")
-            for dp in self.datapath_list:
-                print("deleting all flows for datapath: ", dp.id)
-                self.remove_all_flows_from_sw(dp)            
-            self.boolDeleteFlows = False
-        else:
-            out_port = self.slice_to_port[dpid][in_port]
-            actions = [datapath.ofproto_parser.OFPActionOutput(out_port)]
-            match = datapath.ofproto_parser.OFPMatch(in_port=in_port)            
-
-            self.add_flow(datapath, 1, match, actions)
-            self._send_package(msg, datapath, in_port, actions)
-        """
-
-    @set_ev_cls(ofp_event.EventOFPFlowRemoved, MAIN_DISPATCHER)
-    def flow_removed_handler(self, ev):
-        print("FLOW REMOVED HANDLER")
-        msg = ev.msg
-        dp = msg.datapath
-        ofp = dp.ofproto
-        reason = msg.reason
-        if reason == ofp.OFPRR_IDLE_TIMEOUT:
-            reason = "idle timeout"
-        elif reason == ofp.OFPRR_HARD_TIMEOUT:
-            reason = "hard timeout"
-        elif reason == ofp.OFPRR_DELETE:
-            reason = "manually deleted"
-        elif reason == ofp.OFPRR_GROUP_DELETE:
-            reason = "group deleted"
-        else:
-            reason = "unknown"
-
-        print("Flow removed: reason={}, match={}, duration={}, idle_timeout={}, hard_timeout={}, cookie={}, packet_count={}, byte_count={}".format(
-            reason, msg.match, msg.duration_sec, msg.idle_timeout, msg.hard_timeout, msg.cookie, msg.packet_count, msg.byte_count))
         
+    #this handler is for the switch enter event   
     @set_ev_cls(event.EventSwitchEnter)
     def switch_enter_handler(self, ev):
         switch_dp = ev.switch.dp

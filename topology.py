@@ -20,26 +20,35 @@ class NetworkSlicingTopo(Topo):
         host_link_config = dict()
 
         # Create switch nodes
-        for i in range(4):
+        for i in range(10):
             sconfig = {"dpid": "%016x" % (i + 1)}
             self.addSwitch("s%d" % (i + 1), **sconfig)
 
         # Create host nodes
         for i in range(6):
             self.addHost("h%d" % (i + 1), **host_config)
-
-        # Add links
-        self.addLink("h1", "s1", **host_link_config)
-        self.addLink("h2", "s1", **host_link_config)
-        self.addLink("h3", "s1", **host_link_config)
+        
+        # Add links between switches
+        self.addLink("s5", "s1", **fast_link)
+        self.addLink("s6", "s1", **fast_link)
+        self.addLink("s7", "s1", **fast_link)
         self.addLink("s1", "s2", **fast_link)
         self.addLink("s2", "s4", **fast_link)
         self.addLink("s1", "s4", **medium_link)
         self.addLink("s1", "s3", **slow_link)
         self.addLink("s3", "s4", **slow_link)        
-        self.addLink("h4", "s4", **host_link_config)
-        self.addLink("h5", "s4", **host_link_config)
-        self.addLink("h6", "s4", **host_link_config)
+        self.addLink("s8", "s4", **fast_link)
+        self.addLink("s9", "s4", **fast_link)
+        self.addLink("s10", "s4", **fast_link)
+        
+        # Add links between hosts and switches
+        self.addLink("h1", "s5", **host_link_config)
+        self.addLink("h2", "s6", **host_link_config)
+        self.addLink("h3", "s7", **host_link_config)
+        self.addLink("h4", "s8", **host_link_config)
+        self.addLink("h5", "s9", **host_link_config)
+        self.addLink("h6", "s10", **host_link_config)
+        
 
 
 topos = {"networkslicingtopo": (lambda: NetworkSlicingTopo())}
