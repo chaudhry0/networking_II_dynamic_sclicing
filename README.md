@@ -73,35 +73,55 @@ Overall, On Demand SDN Slices in ComNetsEmu provides a powerful and versatile so
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+Welcome to our repository! In order to get started and have a working local copy of "On demand network slicig" follow these simple example steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* 
-  ```sh
-  install .......
-  ```
+Our software is developded inside ComNetsEmu, a tested and network emulator designed for the NFV/SDN teaching book "Computing in Communication Networks: From Theory to Practice". ComNetsEmu extends the famous Mininet emulator to support better emulation of versatile NFV/SDN network applications. It extends and puts forward the concepts and work in the Containernet project.
+
+* More detailed information <a href="https://git.comnets.net/public-repo/comnetsemu">here</a> 
+```bash
+$ cd ~
+$ git clone https://git.comnets.net/public-repo/comnetsemu.git
+$ cd ./comnetsemu
+$ vagrant up comnetsemu
+# Take a coffee and wait about 15 minutes
+
+# SSH into the VM when it's up and ready (The ComNetsEmu banner is printed on the screen)
+$ vagrant ssh comnetsemu
+```
+
 
 ### Installation
 
-1. text
-2. Clone the repo
+* Instead, to get our software, follow the instruction below:  
+1. Clone the repo
    ```sh
    git clone https://github.com/chaudhry0/networking_II_dynamic_sclicing
-   ```
-3. 
-   ```sh
-   
-   ```
-4. 
-   ```js
-  
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+
+<!-- HOW TO RUN -->
+## Ho to run
+
+First go to this dir ./networking_II_dynamic_slicing/.  to run the following command:
+1. Enable ryu controller to isolate the network topology into slices and creates the GUI:
+   ```sh
+   $ ryu-manager ryu_slice.py --observe-links
+   ```
+2. Network creation in Mininet (in a new terminal):
+   ```sh
+   $ sudo python3 topology.py
+   ```
+3. 
+
+Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+
+_For more examples, please refer to the [Documentation](https://example.com)_
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 <!-- USAGE EXAMPLES -->
@@ -128,6 +148,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
      └── README.md
 ```
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 <!-- ABOUT US -->
 ## About us
 
