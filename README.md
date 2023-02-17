@@ -115,11 +115,10 @@ First go to this dir ./networking_II_dynamic_slicing/.  to run the following com
    ```sh
    $ sudo python3 topology.py
    ```
-3. 
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
+3. See real-time switches log file
+   ```sh
+   $ sudo tail -f /var/log/openvswitch/ovs-vswitchd.log
+   ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
