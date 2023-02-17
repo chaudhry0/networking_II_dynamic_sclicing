@@ -187,7 +187,7 @@ Thank you for visiting our page!
 [Python-url]: https://www.python.org/doc/
 [VSC-logo]: https://img.shields.io/badge/-Visual%20Studio%20Code-007ACC.svg?logo=visual-studio-code&style=flat
 [VSC-url]: https://code.visualstudio.com/
-[Mininet-logo]: "images/logos_and_icons/mininet.png"
+[Mininet-logo]: images/logos_and_icons/mininet.png
 [Mininet-url]: http://mininet.org/
-[Comnetsemu-logo]: "images/logos_and_icons/comnetsemu.png"
+[Comnetsemu-logo]: images/logos_and_icons/comnetsemu.png
 [Comnetsemu-url]: https://www.granelli-lab.org/researches/relevant-projects/comnetsemu-sdn-nfv-emulator
