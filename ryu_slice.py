@@ -298,7 +298,7 @@ class TrafficSlicing(app_manager.RyuApp):
             10: {1: 2, 2: 1},
 
         }
-        self.print_slice_to_port()
+        #self.print_slice_to_port()
 
     #this function change the dictionary self.slice_to_port according to administration_normal scenario
     def administration_normal(self):
