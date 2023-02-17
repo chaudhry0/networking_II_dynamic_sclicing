@@ -113,6 +113,21 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- PROJECT LAYOUT -->
+## Project Layout
+```
+
+└── [networking_II_dynamic_slicing]
+     ├── [Images]
+     │    ├── scenario1
+     │    ├── scenario2
+     │    ├── scenario3
+     │    └── scenario4
+     ├── ryu_sclice.py      
+     ├── topology.py
+     └── README.md
+```
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 <!-- ABOUT US -->
 ## About us
 
