@@ -12,7 +12,7 @@
   <p align="center">
     powered by Unitn students
     <br />
-    <a href="https://github.com/chaudhry0/networking_II_dynamic_sclicing"><strong>Explore the documents »</strong></a>
+    <a href="https://docs.google.com/presentation/d/16mhrYgM1bwTjN1HjwxlCGBQPV1TGdutkFfXK27SI580/edit#slide=id.g1dd0e9f175d_0_7"><strong>Explore the documents/Presentation »</strong></a>
     <br />
     <br />
     <a href="https://www.youtube.com/watch?v=mKPfAVHFmTE">View video Demo</a>
@@ -42,7 +42,7 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#project">Project Layout</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
@@ -77,9 +77,9 @@ Welcome to our repository! In order to get started and have a working local copy
 
 ### Prerequisites
 
-Our software is developded inside ComNetsEmu, a tested and network emulator designed for the NFV/SDN teaching book "Computing in Communication Networks: From Theory to Practice". ComNetsEmu extends the famous Mininet emulator to support better emulation of versatile NFV/SDN network applications. It extends and puts forward the concepts and work in the Containernet project.
+Our software is developded inside <a href="https://git.comnets.net/public-repo/comnetsemu">ComNetsEmu</a>, a tested and network emulator designed for the NFV/SDN teaching book "Computing in Communication Networks: From Theory to Practice". ComNetsEmu extends the famous Mininet emulator to support better emulation of versatile NFV/SDN network applications. It extends and puts forward the concepts and work in the Containernet project.
 
-* More detailed information <a href="https://git.comnets.net/public-repo/comnetsemu">here</a> 
+* More detailed information <a href="https://www.granelli-lab.org/researches/relevant-projects/comnetsemu-labs">here</a> 
 ```bash
 $ cd ~
 $ git clone https://git.comnets.net/public-repo/comnetsemu.git
@@ -126,9 +126,10 @@ First go to this dir ./networking_II_dynamic_slicing/.  to run the following com
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+The goal of our project is to propose an implementation of a network slicing approach on-demand, therefore the user can be able to activate and deactivate different slices. 
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+
+_For more detail, please refer to the [VIDEO](https://www.youtube.com/watch?v=mKPfAVHFmT)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -174,7 +175,11 @@ Project Link: [On Demand Network Slicing](https://github.com/chaudhry0/networkin
 
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
-
+* [Computing in Communication Networks: From Theory to Practice](https://cn.ifn.et.tu-dresden.de/compcombook/)
+* [ComNetsEmu](https://github.com/](https://git.comnets.net/public-repo/comnetsemu)
+* [Mininet](http://mininet.org/)
+* [Python](https://www.python.org/doc/)
+* [VS Code](https://code.visualstudio.com/)
 * [GitHub](https://github.com/)
 
 
