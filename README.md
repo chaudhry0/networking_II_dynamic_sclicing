@@ -41,9 +41,11 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
+    <li><a href="#how-to-run">how to run</a></li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#project">Project Layout</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#project-layout">Project Layout</a></li>
+    <li><a href="#about-us">About Us</a></li>
+    <li><a href="#contacts">Contacts</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
@@ -104,7 +106,7 @@ $ vagrant ssh comnetsemu
 
 
 <!-- HOW TO RUN -->
-## Ho to run
+## How to run
 
 First go to this dir ./networking_II_dynamic_slicing/.  to run the following command:
 1. Enable ryu controller to isolate the network topology into slices and creates the GUI:
@@ -176,7 +178,7 @@ Project Link: [On Demand Network Slicing](https://github.com/chaudhry0/networkin
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 * [Computing in Communication Networks: From Theory to Practice](https://cn.ifn.et.tu-dresden.de/compcombook/)
-* [ComNetsEmu](https://github.com/](https://git.comnets.net/public-repo/comnetsemu)
+* [ComNetsEmu](https://git.comnets.net/public-repo/comnetsemu)
 * [Mininet](http://mininet.org/)
 * [Python](https://www.python.org/doc/)
 * [VS Code](https://code.visualstudio.com/)
