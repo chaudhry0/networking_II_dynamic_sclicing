@@ -95,13 +95,13 @@ $ vagrant ssh comnetsemu
 
 
 * You need an X server to be able to export the graphical user interface from an ssh connection
-   1. Download and install the X server application <a href="https://sourceforge.net/projects/vcxsrv/">VcXsrv</a>  
-   2. Once installed, start the XLaunch software to configure the X server
-   3. In the first window, check that the option “Multiple Windows” is selected and that “Display number” is set to -1
-   4. Click “Next”
-   5. In the second window, ensure that the option “Start no client” is selected and click “Next”
-   6. In the third window, check all the flags and click “End”
-   7. The X server should now be active
+  1. Download and install the X server application <a href="https://sourceforge.net/projects/vcxsrv/">VcXsrv</a>  
+  2. Once installed, start the XLaunch software to configure the X server
+  3. In the first window, check that the option “Multiple Windows” is selected and that “Display number” is set to -1
+  4. Click “Next”
+  5. In the second window, ensure that the option “Start no client” is selected and click “Next”
+  6. In the third window, check all the flags and click “End”
+  7. The X server should now be active
 
 
 ### Installation
