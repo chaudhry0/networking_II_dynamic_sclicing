@@ -12,7 +12,7 @@
   <p align="center">
     powered by Unitn students
     <br />
-    <a href="https://docs.google.com/presentation/d/16mhrYgM1bwTjN1HjwxlCGBQPV1TGdutkFfXK27SI580/edit#slide=id.g1dd0e9f175d_0_7"><strong>Explore the documents/Presentation »</strong></a>
+    <a href="https://docs.google.com/presentation/d/16mhrYgM1bwTjN1HjwxlCGBQPV1TGdutkFfXK27SI580/edit#slide=id.g1dd0e9f175d_0_7"><strong>Explore the Presentation »</strong></a>
     <br />
     <br />
     <a href="https://www.youtube.com/watch?v=mKPfAVHFmTE">View video Demo</a>
