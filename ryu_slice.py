@@ -394,7 +394,7 @@ class TrafficSlicing(app_manager.RyuApp):
         #print("message type: ", msg.msg_type)
         #print("OUT", out)
 
-   #this function is to remove all flows from the switch   
+   #this function is to remove all flows from the switch with the priority 1   
     def remove_all_flows_from_sw(self, datapath):
         ofp = datapath.ofproto
         ofp_parser = datapath.ofproto_parser
