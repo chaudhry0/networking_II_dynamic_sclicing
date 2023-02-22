@@ -17,8 +17,8 @@
                 host_number1['values'] = h_list
 
 ```
-3) Separete GUI from controller file.
-4) Use dijkstra alghoritm to find best path using bandwidth graph (created in networkx). This graph should update each time a path is added or deleted.
+2) Separete GUI from controller file.
+3) Use dijkstra alghoritm to find best path using bandwidth graph (created in networkx). This graph should update each time a path is added or deleted.
 * Here is a starting point (opensource dijkstra in python):
 
 ```python
