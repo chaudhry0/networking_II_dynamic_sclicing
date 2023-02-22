@@ -131,6 +131,22 @@ First go to this dir ./networking_II_dynamic_slicing/.  to run the following com
    ```sh
    $ sudo tail -f /var/log/openvswitch/ovs-vswitchd.log
    ```
+Please execute the following command to clear everething before running new example:
+```bash
+$ sudo mn -c
+```
+
+##  test 
+
+ to test if everething is working execute the following commands:
+
+1. 	ping to check connetivity (in Mininet)
+	```bash
+	mininet>pingall
+	```
+2. 	bandwidth check (in Mininet)
+	```bash 
+	mininet>iperf h1 h4
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
